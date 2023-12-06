@@ -141,7 +141,8 @@ public class FiltersQueryBuilderJpaImpl<E> implements FiltersQueryBuilder {
   public void between(
       String name, ParseTree startValue, ParseTree endValue) {
     Path<? extends Comparable<? super Object>> path = entity.get(name);
-    ParameterExpression<? extends Comparable<? super Object>> p1 = createParameter(name, startValue);
+    ParameterExpression<? extends Comparable<? super Object>> p1 =
+        createParameter(name, startValue);
     ParameterExpression<? extends Comparable<? super Object>> p2 = createParameter(name, endValue);
     Predicate predicate = criteriaBuilder.between(path, p1, p2);
     predicates.add(predicate);
@@ -249,11 +250,13 @@ public class FiltersQueryBuilderJpaImpl<E> implements FiltersQueryBuilder {
       BiFunction<Path<? extends Comparable<? super Object>>,
           ParameterExpression<? extends Comparable<? super Object>>, T> action) {
     Path<? extends Comparable<? super Object>> path = entity.get(name);
-    ParameterExpression<? extends Comparable<? super Object>> parameter = createParameter(name, value);
+    ParameterExpression<? extends Comparable<? super Object>> parameter =
+        createParameter(name, value);
     return action.apply(path, parameter);
   }
 
-  private <T extends Comparable<? super T>> ParameterExpression<T> createParameter(String name, ParseTree value) {
+  private <T extends Comparable<? super T>> ParameterExpression<T> createParameter(
+      String name, ParseTree value) {
     return createParameter(name, value, Function.identity());
   }
 
