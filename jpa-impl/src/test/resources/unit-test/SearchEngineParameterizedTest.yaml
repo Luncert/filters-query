@@ -1,0 +1,63 @@
+case_without_filters_with_offset_and_limit:
+  criteria: "filter by () sort by id desc offset 0 limit 2"
+  expected: [9, 8]
+case_createdAt_equal:
+  criteria: "filter by createdAt = 1682932200000"
+  expected: [1, 4, 7]
+case_categoryId_and_subCategoryId_equal:
+  criteria: 'filter by categoryId = "C" and subCategoryId = "SC2"'
+  expected: [3]
+case_externalReference_or_severity_equal:
+  criteria: 'filter by externalReference="ext03" or severity = "Success"'
+  expected: [6, 7, 8, 9]
+case_externalReference_or_severity_equal_with_offset_and_limit:
+  criteria: 'filter by externalReference="ext03" or severity = "Success" offset 1 limit 2'
+  expected: [7, 8]
+case_externalReference_or_severity_equal_sort_by_id_desc:
+  criteria: 'filter by externalReference="ext03" or severity = "Success" sort   by id desc'
+  expected: [9, 8, 7, 6]
+case_externalReference_or_severity_equal_with_sort_offset_and_limit:
+  criteria: 'filter by externalReference="ext03" or severity = "Success" sort by id desc offset 2 limit 1'
+  expected: [7]
+case_subCategoryId_not_equal:
+  criteria: 'filter by subCategoryId!="SC1"'
+  expected: [-1, 2, 3, 5, 6, 8, 9]
+case_id_not_equal:
+  criteria: 'filter by id!=0 and id!=1 and id!=2 and id!=3'
+  expected: [-1, 4, 5, 6, 7, 8, 9]
+case_subCategoryId_empty:
+  criteria: 'filter by subCategoryId=empty or createdAt=empty'
+  expected: [-1, 6]
+case_subCategoryId_not_empty:
+  criteria: 'filter by subCategoryId!=empty'
+  expected: [1, 2, 3, 4, 5, 7, 8, 9]
+case_categoryId_lessThan:
+  criteria: 'filter by categoryId < "C"'
+  expected: [1]
+case_id_greaterEqualThan:
+  criteria: 'filter by id >= 8'
+  expected: [8, 9]
+case_id_greaterThan:
+  criteria: 'filter by id > 8'
+  expected: [9]
+case_id_lessEqualThan:
+  criteria: 'filter by id <= 2'
+  expected: [-1, 1, 2]
+case_id_lessThan:
+  criteria: 'filter by id < 2'
+  expected: [-1, 1]
+case_id_between:
+  criteria: 'filter by id between [2, 8]'
+  expected: [2, 3, 4, 5, 6, 7, 8]
+case_externalReference_startsWith:
+  criteria: 'filter by externalReference startsWith "ext"'
+  expected: [4, 6, 7, 8, 9]
+case_externalReference_endsWith:
+  criteria: 'filter by externalReference endsWith "03"'
+  expected: [3, 6]
+case_createdAt_like:
+  criteria: 'filter by createdAt like "9322"'
+  expected: [1, 4, 7]
+case_paren:
+  criteria: 'filter   by (externalReference endsWith "03" or createdAt like "9322") and id > 5'
+  expected: [6, 7]

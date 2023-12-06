@@ -1,0 +1,29 @@
+<configuration debug="false" scan="false">
+  <!-- log JSON strings to STDOUT -->
+  <!-- log human-readable strings to STDOUT-->
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%date %-5level [%thread] - [%logger] [%mdc] - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <root level="info">
+    <appender-ref ref="STDOUT"/>
+  </root>
+
+  <logger name="com.lks.searchengine.TestApp" level="TRACE"/>
+  <logger name="org.springframework" level="ERROR"/>
+  <logger name="org.cloudfoundry" level="ERROR"/>
+  <logger name="org.apache.kafka" level="ERROR"/>
+  <logger name="org.hibernate" level="INFO"/>
+  <logger name="org.hibernate.SQL" level="DEBUG" />
+  <logger name="org.hibernate.type" level="TRACE" />
+  <logger name="org.apache.catalina" level="ERROR"/>
+  <logger name="com.sap.kafka" level="ERROR"/>
+  <logger name="com.sap.cloud" level="ERROR"/>
+  <logger name="com.sap.cds" level="ERROR"/>
+  <logger name="com.sap.db" level="ERROR"/>
+  <logger name="com.sap.xs2" level="ERROR"/>
+  <logger name="com.sap.xsa" level="ERROR"/>
+  <logger name="com.sap.hcp" level="ERROR"/>
+
+</configuration>

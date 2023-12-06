@@ -1,0 +1,78 @@
+[
+  {
+    "id": "1",
+    "externalReference": "ref01",
+    "severity": "Error",
+    "categoryId": "A",
+    "subCategoryId": "SC1",
+    "createdAt": "1682932200000"
+  },
+  {
+    "id": "2",
+    "externalReference": "ref02",
+    "severity": "Error",
+    "categoryId": "C",
+    "subCategoryId": "SC3",
+    "createdAt": "1683018600000"
+  },
+  {
+    "id": "3",
+    "externalReference": "ref03",
+    "severity": "Error",
+    "categoryId": "C",
+    "subCategoryId": "SC2",
+    "createdAt": "1683018600000"
+  },
+  {
+    "id": "4",
+    "externalReference": "ext01",
+    "severity": "Warning",
+    "categoryId": "C",
+    "subCategoryId": "SC1",
+    "createdAt": "1682932200000"
+  },
+  {
+    "id": "5",
+    "severity": "Warning",
+    "categoryId": "C",
+    "subCategoryId": "SC3",
+    "createdAt": "1683018600000"
+  },
+  {
+    "id": "6",
+    "externalReference": "ext03",
+    "severity": "Warning",
+    "categoryId": "C",
+    "createdAt": "1683018600000"
+  },
+  {
+    "id": "7",
+    "externalReference": "ext04",
+    "severity": "Success",
+    "categoryId": "C",
+    "subCategoryId": "SC1",
+    "createdAt": "1682932200000"
+  },
+  {
+    "id": "8",
+    "externalReference": "ext05",
+    "severity": "Success",
+    "categoryId": "C",
+    "subCategoryId": "SC3",
+    "createdAt": "1683018600000"
+  },
+  {
+    "id": "9",
+    "externalReference": "ext05",
+    "severity": "Success",
+    "subCategoryId": "SC2",
+    "createdAt": "1683018600000"
+  },
+  {
+    "id": "-1",
+    "externalReference": "",
+    "severity": "s%01",
+    "subCategoryId": "",
+    "createdAt": ""
+  }
+]
