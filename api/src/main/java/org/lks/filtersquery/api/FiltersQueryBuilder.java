@@ -3,7 +3,7 @@ package org.lks.filtersquery.api;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-interface FiltersQueryBuilder {
+public interface FiltersQueryBuilder {
 
   void enterParentheses();
 
@@ -49,5 +49,8 @@ interface FiltersQueryBuilder {
 
   void end();
 
-  //Result build();
+  <T extends Result> T build();
+
+  interface Result {
+  }
 }

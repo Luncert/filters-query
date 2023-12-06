@@ -2,19 +2,22 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.lks</groupId>
-  <artifactId>filters-query-api</artifactId>
+  <groupId>org.lks.filters-query</groupId>
+  <artifactId>filters-query</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
-  <name>filters-query-api</name>
+  <name>filters-query</name>
   <url>http://maven.apache.org</url>
+  <modules>
+    <module>api</module>
+    <module>jpa-impl</module>
+  </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-    <antlr-version>4.10.1</antlr-version>
   </properties>
 
   <dependencies>
@@ -22,12 +25,6 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.26</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr4-runtime</artifactId>
-      <version>${antlr-version}</version>
     </dependency>
 
     <dependency>
@@ -40,31 +37,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.antlr</groupId>
-        <artifactId>antlr4-maven-plugin</artifactId>
-        <version>${antlr-version}</version>
-        <executions>
-          <execution>
-            <id>antlr</id>
-            <goals>
-              <goal>antlr4</goal>
-            </goals>
-            <configuration>
-              <arguments>
-                <argument>-package</argument>
-                <argument>org.lks.filtersquery.api.grammar</argument>
-                <argument>-o</argument>
-                <argument>${project.build.directory}/generated-sources/antlr4/org/lks/filtersquery/api/grammar</argument>
-              </arguments>
-              <sourceDirectory>${basedir}/src/main/antlr4</sourceDirectory>
-              <listener>true</listener>
-              <visitor>true</visitor>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

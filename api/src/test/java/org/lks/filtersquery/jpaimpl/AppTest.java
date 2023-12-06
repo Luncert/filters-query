@@ -1,4 +1,4 @@
-package org.lks.filtersquery.api;
+package org.lks.filtersquery.jpaimpl;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
