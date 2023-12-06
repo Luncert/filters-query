@@ -6,14 +6,11 @@ import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.ParameterExpression;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import jakarta.persistence.metamodel.Attribute;
-import jakarta.persistence.metamodel.EntityType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +25,6 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.lks.filtersquery.api.FiltersQueryBuilder;
-import org.lks.filtersquery.api.exception.FiltersQueryException;
 import org.lks.filtersquery.api.exception.IllegalParameterException;
 import org.lks.filtersquery.api.grammar.FiltersQueryParser;
 
@@ -287,28 +283,6 @@ public class FiltersQueryBuilderJpaImpl<E> implements FiltersQueryBuilder {
 
   private boolean isLiteral(String name) {
     return String.class.isAssignableFrom(entity.get(name).getModel().getBindableJavaType());
-  }
-
-  private Expression<?>[] getIds() {
-    EntityType<E> model = entity.getModel();
-    if (model.hasSingleIdAttribute()) {
-      // FIXME: performance impact
-      for (Attribute<? super E, ?> attribute : model.getAttributes()) {
-        try {
-          if (model.getIdType().getJavaType().isAssignableFrom(attribute.getJavaType())) {
-            model.getId(attribute.getJavaType());
-            return new Expression[]{entity.get(attribute.getName())};
-          }
-        } catch (IllegalArgumentException e) {
-          // ignore
-        }
-      }
-      throw new FiltersQueryException("cannot find id field of " + entity.getJavaType());
-    } else {
-      return model.getIdClassAttributes().stream()
-          .map(attr -> entity.get(attr.getName()))
-          .toArray(Expression[]::new);
-    }
   }
 
   @Getter
