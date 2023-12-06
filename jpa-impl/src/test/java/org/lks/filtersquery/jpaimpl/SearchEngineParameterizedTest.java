@@ -1,7 +1,6 @@
 package org.lks.filtersquery.jpaimpl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.lks.testext.junit4.TestKit;
 import java.util.Collection;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -12,7 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.lks.filtersquery.api.FiltersQueryEngine;
+import org.lks.junitwithdata.common.TestKit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
