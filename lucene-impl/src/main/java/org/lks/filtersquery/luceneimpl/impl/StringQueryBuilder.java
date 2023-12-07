@@ -6,11 +6,23 @@ import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.RegexpQuery;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeQuery;
+import org.apache.lucene.search.WildcardQuery;
 
 public class StringQueryBuilder extends BasicTypedQueryBuilder<String> {
+
+  @Override
+  public Query empty(String name) {
+    return equal(name, "[NULL_VALUE]");
+  }
+
+  @Override
+  public Query notEmpty(String name) {
+    return notEqual(name, "[NULL_VALUE]");
+  }
 
   @Override
   public SortField.Type getSortType() {
@@ -25,7 +37,7 @@ public class StringQueryBuilder extends BasicTypedQueryBuilder<String> {
   @Override
   public Query notEqual(String name, String literalValue) {
     return new BooleanQuery.Builder()
-        .add(TermRangeQuery.newStringRange(name, "*", "*", true, true), SHOULD)
+        .add(new WildcardQuery(new Term(name, "*")), SHOULD)
         .add(new TermQuery(new Term(name, literalValue)), MUST_NOT)
         .build();
   }
@@ -57,16 +69,16 @@ public class StringQueryBuilder extends BasicTypedQueryBuilder<String> {
 
   @Override
   public Query startsWith(String name, String literalValue) {
-    return super.startsWith(name, literalValue);
+    return new RegexpQuery(new Term(name, literalValue + "@"));
   }
 
   @Override
   public Query endsWith(String name, String literalValue) {
-    return super.endsWith(name, literalValue);
+    return new RegexpQuery(new Term(name, "@" + literalValue));
   }
 
   @Override
   public Query like(String name, String literalValue) {
-    return super.like(name, literalValue);
+    return new RegexpQuery(new Term(name, "@" + literalValue + "@"));
   }
 }

@@ -35,7 +35,7 @@ public class LongQueryBuilder extends BasicTypedQueryBuilder<Long> {
   @Override
   public Query greaterThan(String name, String literalValue) {
     long v = Long.parseLong(literalValue);
-    return LongPoint.newRangeQuery(name, Math.min(v, v - 1), Long.MAX_VALUE);
+    return LongPoint.newRangeQuery(name, Math.max(v, v + 1), Long.MAX_VALUE);
   }
 
   @Override
@@ -47,7 +47,7 @@ public class LongQueryBuilder extends BasicTypedQueryBuilder<Long> {
   @Override
   public Query lessThan(String name, String literalValue) {
     long v = Long.parseLong(literalValue);
-    return LongPoint.newRangeQuery(name, Long.MIN_VALUE, Math.max(v, v + 1));
+    return LongPoint.newRangeQuery(name, Long.MIN_VALUE, Math.min(v, v - 1));
   }
 
   @Override

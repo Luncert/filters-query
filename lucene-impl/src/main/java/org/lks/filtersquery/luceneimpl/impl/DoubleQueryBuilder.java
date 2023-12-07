@@ -37,7 +37,7 @@ public class DoubleQueryBuilder extends BasicTypedQueryBuilder<Double> {
   @Override
   public Query greaterThan(String name, String literalValue) {
     double v = Double.parseDouble(literalValue);
-    return DoublePoint.newRangeQuery(name, Math.min(v, v - 1), Double.MAX_VALUE);
+    return DoublePoint.newRangeQuery(name, Math.max(v, v + 1), Double.MAX_VALUE);
   }
 
   @Override
@@ -49,7 +49,7 @@ public class DoubleQueryBuilder extends BasicTypedQueryBuilder<Double> {
   @Override
   public Query lessThan(String name, String literalValue) {
     double v = Double.parseDouble(literalValue);
-    return DoublePoint.newRangeQuery(name, Double.MIN_VALUE, Math.max(v, v + 1));
+    return DoublePoint.newRangeQuery(name, Double.MIN_VALUE, Math.min(v, v - 1));
   }
 
   @Override

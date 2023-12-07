@@ -37,7 +37,7 @@ public class FloatQueryBuilder extends BasicTypedQueryBuilder<Float> {
   @Override
   public Query greaterThan(String name, String literalValue) {
     float v = Float.parseFloat(literalValue);
-    return FloatPoint.newRangeQuery(name, Math.min(v, v - 1), Float.MAX_VALUE);
+    return FloatPoint.newRangeQuery(name, Math.max(v, v + 1), Float.MAX_VALUE);
   }
 
   @Override
@@ -49,7 +49,7 @@ public class FloatQueryBuilder extends BasicTypedQueryBuilder<Float> {
   @Override
   public Query lessThan(String name, String literalValue) {
     float v = Float.parseFloat(literalValue);
-    return FloatPoint.newRangeQuery(name, Float.MIN_VALUE, Math.max(v, v + 1));
+    return FloatPoint.newRangeQuery(name, Float.MIN_VALUE, Math.min(v, v - 1));
   }
 
   @Override

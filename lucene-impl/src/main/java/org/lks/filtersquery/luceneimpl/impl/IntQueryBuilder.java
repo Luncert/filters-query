@@ -37,7 +37,7 @@ public class IntQueryBuilder extends BasicTypedQueryBuilder<Integer> {
   @Override
   public Query greaterThan(String name, String literalValue) {
     int v = Integer.parseInt(literalValue);
-    return IntPoint.newRangeQuery(name, Math.min(v, v - 1), Integer.MAX_VALUE);
+    return IntPoint.newRangeQuery(name, Math.max(v, v + 1), Integer.MAX_VALUE);
   }
 
   @Override
@@ -49,7 +49,7 @@ public class IntQueryBuilder extends BasicTypedQueryBuilder<Integer> {
   @Override
   public Query lessThan(String name, String literalValue) {
     int v = Integer.parseInt(literalValue);
-    return IntPoint.newRangeQuery(name, Integer.MIN_VALUE, Math.max(v, v + 1));
+    return IntPoint.newRangeQuery(name, Integer.MIN_VALUE, Math.min(v, v - 1));
   }
 
   @Override
