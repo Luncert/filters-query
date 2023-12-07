@@ -15,7 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-public class JpaFiltersQueryEngine<E> extends FiltersQueryEngine {
+public abstract class JpaFiltersQueryEngine<E> extends FiltersQueryEngine {
 
   private final EntityManager em;
   private final Class<E> entityType;
