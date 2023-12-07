@@ -12,13 +12,16 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.LongPoint;
+import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.StoredField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
@@ -45,22 +48,24 @@ public class QueryEngineParameterizedTest {
 
   @Before
   public void before() {
-    List<LogHeader> data = TestKit.loadData("unit-test/Data.json", new TypeReference<>() { });
+    List<LogHeader> data = TestKit.loadData("unit-test/Data.json", new TypeReference<>() {
+    });
     try (IndexWriter indexWriter = new IndexWriter(directory, new IndexWriterConfig(new StandardAnalyzer()))) {
       for (LogHeader source : data) {
         Document document = new Document();
+        document.add(new NumericDocValuesField("id", source.getId()));
         document.add(new LongPoint("id", source.getId()));
         document.add(new StoredField("id", source.getId()));
         document.add(new LongPoint("createdAt", source.getCreatedAt()));
         document.add(new StoredField("createdAt", source.getCreatedAt()));
-        whenNotEmpty(source.getExternalReference(), v ->
-            document.add(new TextField("externalReference", v, Field.Store.YES)));
-        whenNotEmpty(source.getSeverity(), v ->
-            document.add(new TextField("severity", v, Field.Store.YES)));
-        whenNotEmpty(source.getCategoryId(), v ->
-            document.add(new TextField("categoryId", v, Field.Store.YES)));
-        whenNotEmpty(source.getSubCategoryId(), v ->
-            document.add(new TextField("subCategoryId", v, Field.Store.YES)));
+        document.add(new StringField("externalReference",
+            wrapNull(source.getExternalReference()), Field.Store.YES));
+        document.add(new StringField("severity",
+            wrapNull(source.getSeverity()), Field.Store.YES));
+        document.add(new StringField("categoryId",
+            wrapNull(source.getCategoryId()), Field.Store.YES));
+        document.add(new StringField("subCategoryId",
+            wrapNull(source.getSubCategoryId()), Field.Store.YES));
         indexWriter.addDocument(document);
       }
     } catch (IOException e) {
@@ -68,10 +73,8 @@ public class QueryEngineParameterizedTest {
     }
   }
 
-  private void whenNotEmpty(String value, Consumer<String> then) {
-    if (StringUtils.isNotEmpty(value)) {
-      then.accept(value);
-    }
+  private String wrapNull(String value) {
+    return value == null ? "[NULL_VALUE]" : value;
   }
 
   @After
@@ -91,7 +94,9 @@ public class QueryEngineParameterizedTest {
     try (IndexReader indexReader = DirectoryReader.open(directory)) {
       IndexSearcher searcher = new IndexSearcher(indexReader);
       int limit = result.getLimit() == null ? 1000 : result.getLimit();
-      TopDocs topDocs = searcher.search(result.getQuery(), limit);
+      TopDocs topDocs = result.getSort() == null
+          ? searcher.search(result.getQuery(), limit)
+          : searcher.search(result.getQuery(), limit, result.getSort());
 
       List<Long> ids = Arrays.stream(topDocs.scoreDocs).map(scoreDoc -> {
         try {
@@ -101,7 +106,8 @@ public class QueryEngineParameterizedTest {
           throw new RuntimeException(e);
         }
       }).toList();
-      List<Long> expectData = loader.extractAs(testCase + ".expected", new TypeReference<>() {});
+      List<Long> expectData = loader.extractAs(testCase + ".expected", new TypeReference<>() {
+      });
       TestKit.assertEquals(ids, expectData);
     }
   }
@@ -112,14 +118,16 @@ public class QueryEngineParameterizedTest {
         //"case_without_filters_with_offset_and_limit",
 
         //"case_createdAt_equal",
-        "case_categoryId_and_subCategoryId_equal"
-
+        //"case_categoryId_and_subCategoryId_equal",
         //"case_externalReference_or_severity_equal",
+
         //"case_externalReference_or_severity_equal_with_offset_and_limit",
         //"case_externalReference_or_severity_equal_sort_by_id_desc",
         //"case_externalReference_or_severity_equal_with_sort_offset_and_limit",
+
         //"case_subCategoryId_not_equal",
-        //"case_id_not_equal",
+
+        "case_id_not_equal"
         //"case_subCategoryId_empty",
         //"case_subCategoryId_not_empty",
         //"case_categoryId_lessThan",
