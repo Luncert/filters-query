@@ -4,6 +4,7 @@ import static org.apache.lucene.search.BooleanClause.Occur.MUST;
 import static org.apache.lucene.search.BooleanClause.Occur.MUST_NOT;
 import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
 
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -12,14 +13,20 @@ import java.util.Stack;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.lucene.document.DoublePoint;
+import org.apache.lucene.document.FloatPoint;
+import org.apache.lucene.document.IntPoint;
+import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.FuzzyQuery;
+import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.RegexpQuery;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeQuery;
@@ -29,6 +36,7 @@ import org.lks.filtersquery.api.BasicFiltersQueryBuilder;
 import org.lks.filtersquery.api.FiltersQueryBuilder;
 import org.lks.filtersquery.api.Utils;
 
+@RequiredArgsConstructor
 public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
 
   private final Stack<Integer> parenStack = new Stack<>();
@@ -36,6 +44,7 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
   private List<Integer> operations = new LinkedList<>();
   private final List<SortField> sorts = new ArrayList<>();
   private final ResultImpl result = new ResultImpl();
+  private final Class<?> entityType;
 
   @Override
   public void enterParentheses() {
@@ -55,13 +64,13 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
 
   @Override
   public void equal(String name, ParseTree value) {
-    queries.add(new TermQuery(new Term(name, getLiteral(value))));
+    queries.add(createExactQuery(name, value));
   }
 
   @Override
   public void notEqual(String name, ParseTree value) {
     queries.add(new BooleanQuery.Builder()
-        .add(new BooleanClause(new TermQuery(new Term(name, getLiteral(value))), MUST_NOT))
+        .add(new BooleanClause(createExactQuery(name, value), MUST_NOT))
         .build());
   }
 
@@ -127,17 +136,17 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
 
   @Override
   public void startsWith(String name, ParseTree value) {
-    queries.add(new WildcardQuery(new Term(name, getLiteral(value) + "*")));
+    queries.add(new RegexpQuery(new Term(name, "^" + getLiteral(value) + ".*")));
   }
 
   @Override
   public void endsWith(String name, ParseTree value) {
-    queries.add(new WildcardQuery(new Term(name, "*" + getLiteral(value))));
+    queries.add(new RegexpQuery(new Term(name, ".*" + getLiteral(value) + "^")));
   }
 
   @Override
   public void like(String name, ParseTree value) {
-    queries.add(new FuzzyQuery(new Term(name, getLiteral(value) + "~")));
+    queries.add(new TermQuery(new Term(name, getLiteral(value))));
   }
 
   @Override
@@ -183,25 +192,59 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
         builder.add(new BooleanClause(queries.get(i), SHOULD));
       }
     }
-    if (getTokenName(operations.get(i - 1)).equals("LOGICAL_AND")) {
-      builder.add(new BooleanClause(queries.get(i), MUST));
-    } else {
-      builder.add(new BooleanClause(queries.get(i), SHOULD));
-    }
-    queries = queries.subList(0, startFrom);
-    operations = operations.subList(0, startFrom);
 
-    Query query = builder.build();
-    queries.add(query);
+    Query query;
+    if (operations.isEmpty()) {
+      query = queries.get(i);
+    } else {
+      if (getTokenName(operations.get(i - 1)).equals("LOGICAL_AND")) {
+        builder.add(new BooleanClause(queries.get(i), MUST));
+      } else {
+        builder.add(new BooleanClause(queries.get(i), SHOULD));
+      }
+      query = builder.build();
+      queries = queries.subList(0, startFrom);
+      operations = operations.subList(0, startFrom);
+      queries.add(query);
+    }
+
     return query;
   }
 
   private String getLiteral(ParseTree value) {
-    boolean interpretedStringLit = getTokenName(((TerminalNode) value).getSymbol())
-        .equals("INTERPRETED_STRING_LIT");
-    return interpretedStringLit
+    return isStringLiteral(value)
         ? Utils.unwrap(value.getText(), '"')
         : value.getText();
+  }
+
+  private boolean isStringLiteral(ParseTree value) {
+    return getTokenName(((TerminalNode) value).getSymbol())
+        .equals("INTERPRETED_STRING_LIT");
+  }
+
+  private Query createExactQuery(String name, ParseTree value) {
+    String literalValue = getLiteral(value);
+    try {
+      Class<?> type = entityType.getDeclaredField(name).getType();
+      if (String.class.isAssignableFrom(type)) {
+        return new PhraseQuery(name, literalValue);
+      }
+      if (double.class.isAssignableFrom(type) || Double.class.isAssignableFrom(type)) {
+        return DoublePoint.newExactQuery(name, Double.parseDouble(literalValue));
+      }
+      if (float.class.isAssignableFrom(type) || Float.class.isAssignableFrom(type)) {
+        return FloatPoint.newExactQuery(name, Float.parseFloat(literalValue));
+      }
+      if (long.class.isAssignableFrom(type) || Long.class.isAssignableFrom(type)) {
+        return LongPoint.newExactQuery(name, Long.parseLong(literalValue));
+      }
+      if (int.class.isAssignableFrom(type) || Integer.class.isAssignableFrom(type)) {
+        return IntPoint.newExactQuery(name, Integer.parseInt(literalValue));
+      }
+      throw new IllegalArgumentException("unsupported field type " + type);
+    } catch (NoSuchFieldException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Getter

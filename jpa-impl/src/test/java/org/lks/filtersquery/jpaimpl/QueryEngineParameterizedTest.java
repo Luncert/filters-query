@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 @RunWith(Parameterized.class)
 @ContextConfiguration(classes = TestConfiguration.class)
-public class SearchEngineParameterizedTest {
+public class QueryEngineParameterizedTest {
 
   @ClassRule
   public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
@@ -37,7 +37,7 @@ public class SearchEngineParameterizedTest {
 
   private final String testCase;
 
-  public SearchEngineParameterizedTest(String testCase) {
+  public QueryEngineParameterizedTest(String testCase) {
     this.testCase = testCase;
   }
 
