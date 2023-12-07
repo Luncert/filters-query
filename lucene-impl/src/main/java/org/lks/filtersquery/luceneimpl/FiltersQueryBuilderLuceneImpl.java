@@ -31,6 +31,8 @@ import org.apache.lucene.util.BytesRef;
 import org.lks.filtersquery.api.BasicFiltersQueryBuilder;
 import org.lks.filtersquery.api.FiltersQueryBuilder;
 import org.lks.filtersquery.api.Utils;
+import org.lks.filtersquery.luceneimpl.impl.TypedQueryBuilder;
+import org.lks.filtersquery.luceneimpl.impl.TypedQueryBuilders;
 
 @RequiredArgsConstructor
 public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
@@ -60,87 +62,62 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
 
   @Override
   public void equal(String name, ParseTree value) {
-    queries.add(getTypeMetadata(name).getExactQueryBuilder().apply(name, getLiteral(value)));
+    queries.add(getTypeMetadata(name).equal(name, getLiteral(value)));
   }
 
   @Override
   public void notEqual(String name, ParseTree value) {
-    queries.add(getTypeMetadata(name).getExactNotQueryBuilder().apply(name, getLiteral(value)));
+    queries.add(getTypeMetadata(name).notEqual(name, getLiteral(value)));
   }
 
   @Override
   public void empty(String name) {
-    // TODO:
+    queries.add(getTypeMetadata(name).empty(name));
   }
 
   @Override
   public void notEmpty(String name) {
-    // TODO:
+    queries.add(getTypeMetadata(name).notEmpty(name));
   }
 
   @Override
   public void greaterEqualThan(String name, ParseTree value) {
-    queries.add(new TermRangeQuery(name,
-        new BytesRef(getLiteral(value).getBytes(StandardCharsets.UTF_8)),
-        new BytesRef("*".getBytes(StandardCharsets.UTF_8)),
-        true,
-        false
-    ));
+    queries.add(getTypeMetadata(name).greaterEqualThan(name, getLiteral(value)));
   }
 
   @Override
   public void greaterThan(String name, ParseTree value) {
-    queries.add(new TermRangeQuery(name,
-        new BytesRef(getLiteral(value).getBytes(StandardCharsets.UTF_8)),
-        new BytesRef("*".getBytes(StandardCharsets.UTF_8)),
-        false,
-        false
-    ));
+    queries.add(getTypeMetadata(name).greaterThan(name, getLiteral(value)));
   }
 
   @Override
   public void lessEqualThan(String name, ParseTree value) {
-    queries.add(new TermRangeQuery(name,
-        new BytesRef("*".getBytes(StandardCharsets.UTF_8)),
-        new BytesRef(getLiteral(value).getBytes(StandardCharsets.UTF_8)),
-        true,
-        false
-    ));
+    queries.add(getTypeMetadata(name).lessEqualThan(name, getLiteral(value)));
   }
 
   @Override
   public void lessThan(String name, ParseTree value) {
-    queries.add(new TermRangeQuery(name,
-        new BytesRef("*".getBytes(StandardCharsets.UTF_8)),
-        new BytesRef(getLiteral(value).getBytes(StandardCharsets.UTF_8)),
-        false,
-        false
-    ));
+    queries.add(getTypeMetadata(name).lessThan(name, getLiteral(value)));
   }
 
   @Override
   public void between(String name, ParseTree startValue, ParseTree endValue) {
-    queries.add(new TermRangeQuery(name,
-        new BytesRef(getLiteral(startValue).getBytes(StandardCharsets.UTF_8)),
-        new BytesRef(getLiteral(endValue).getBytes(StandardCharsets.UTF_8)),
-        true,
-        true
-    ));
+    queries.add(getTypeMetadata(name).between(name, getLiteral(startValue), getLiteral(endValue)));
   }
 
   @Override
   public void startsWith(String name, ParseTree value) {
-    queries.add(new RegexpQuery(new Term(name, "^" + getLiteral(value) + ".*")));
+    queries.add(getTypeMetadata(name).startsWith(name, getLiteral(value)));
   }
 
   @Override
   public void endsWith(String name, ParseTree value) {
-    queries.add(new RegexpQuery(new Term(name, ".*" + getLiteral(value) + "^")));
+    queries.add(getTypeMetadata(name).endsWith(name, getLiteral(value)));
   }
 
   @Override
   public void like(String name, ParseTree value) {
-    queries.add(new TermQuery(new Term(name, getLiteral(value))));
+    queries.add(getTypeMetadata(name).like(name, getLiteral(value)));
   }
 
   @Override
@@ -219,9 +196,10 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
         .equals("INTERPRETED_STRING_LIT");
   }
 
-  private TypeMetadata getTypeMetadata(String name) {
+  @SuppressWarnings("unchecked")
+  private <T> TypedQueryBuilder<T> getTypeMetadata(String name) {
     try {
-      return TypeMetadata.get(entityType.getDeclaredField(name).getType());
+      return TypedQueryBuilders.get((Class<T>) entityType.getDeclaredField(name).getType());
     } catch (NoSuchFieldException e) {
       throw new RuntimeException(e);
     }

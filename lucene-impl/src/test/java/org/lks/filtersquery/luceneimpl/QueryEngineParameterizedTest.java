@@ -92,7 +92,6 @@ public class QueryEngineParameterizedTest {
     try (IndexReader indexReader = DirectoryReader.open(directory)) {
       IndexSearcher searcher = new IndexSearcher(indexReader);
       int limit = result.getLimit() == null ? 1000 : result.getLimit();
-      //TopDocs topDocs = searcher.search(, 10);
       TopDocs topDocs = result.getSort() == null
           ? searcher.search(result.getQuery(), limit)
           : searcher.search(result.getQuery(), limit, result.getSort());
@@ -117,24 +116,23 @@ public class QueryEngineParameterizedTest {
         //"case_without_filters_with_offset_and_limit",
 
         // -
-        //"case_createdAt_equal",
-        //"case_categoryId_and_subCategoryId_equal",
-        //"case_externalReference_or_severity_equal",
+        "case_createdAt_equal",
+        "case_categoryId_and_subCategoryId_equal",
+        "case_externalReference_or_severity_equal",
 
         //"case_externalReference_or_severity_equal_with_offset_and_limit",
         //"case_externalReference_or_severity_equal_sort_by_id_desc",
         //"case_externalReference_or_severity_equal_with_sort_offset_and_limit",
 
         // -
-        //"case_subCategoryId_not_equal",
-        //"case_id_not_equal",
+        "case_subCategoryId_not_equal",
+        "case_id_not_equal",
 
         //"case_subCategoryId_empty",
         //"case_subCategoryId_not_empty",
 
         // -
-        //"case_categoryId_lessThan",
-
+        "case_categoryId_lessThan",
         "case_id_greaterEqualThan"
 
         //"case_id_greaterThan",
