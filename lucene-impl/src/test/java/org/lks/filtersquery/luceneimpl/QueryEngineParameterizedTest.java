@@ -19,6 +19,8 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
@@ -73,10 +75,6 @@ public class QueryEngineParameterizedTest {
     }
   }
 
-  private String wrapNull(String value) {
-    return value == null ? "[NULL_VALUE]" : value;
-  }
-
   @After
   public void after() {
     try (IndexWriter indexWriter = new IndexWriter(directory, new IndexWriterConfig(new StandardAnalyzer()))) {
@@ -94,6 +92,7 @@ public class QueryEngineParameterizedTest {
     try (IndexReader indexReader = DirectoryReader.open(directory)) {
       IndexSearcher searcher = new IndexSearcher(indexReader);
       int limit = result.getLimit() == null ? 1000 : result.getLimit();
+      //TopDocs topDocs = searcher.search(, 10);
       TopDocs topDocs = result.getSort() == null
           ? searcher.search(result.getQuery(), limit)
           : searcher.search(result.getQuery(), limit, result.getSort());
@@ -126,12 +125,15 @@ public class QueryEngineParameterizedTest {
         //"case_externalReference_or_severity_equal_with_sort_offset_and_limit",
 
         //"case_subCategoryId_not_equal",
+        //"case_id_not_equal",
 
-        "case_id_not_equal"
         //"case_subCategoryId_empty",
         //"case_subCategoryId_not_empty",
-        //"case_categoryId_lessThan",
-        //"case_id_greaterEqualThan",
+
+        "case_categoryId_lessThan",
+
+        "case_id_greaterEqualThan"
+
         //"case_id_greaterThan",
         //"case_id_lessEqualThan",
         //"case_id_lessThan",
@@ -141,5 +143,9 @@ public class QueryEngineParameterizedTest {
         //"case_createdAt_like",
         //"case_paren"
     );
+  }
+
+  private String wrapNull(String value) {
+    return value == null ? "[NULL_VALUE]" : value;
   }
 }

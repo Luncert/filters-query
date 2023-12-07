@@ -11,7 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.function.BiFunction;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.apache.lucene.document.DoublePoint;
-import org.apache.lucene.document.FloatPoint;
-import org.apache.lucene.document.IntPoint;
-import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -32,7 +27,6 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeQuery;
-import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.BytesRef;
 import org.lks.filtersquery.api.BasicFiltersQueryBuilder;
 import org.lks.filtersquery.api.FiltersQueryBuilder;
@@ -66,16 +60,12 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
 
   @Override
   public void equal(String name, ParseTree value) {
-    queries.add(getTypeMetadata(name).exactQueryBuilder.apply(name, getLiteral(value)));
+    queries.add(getTypeMetadata(name).getExactQueryBuilder().apply(name, getLiteral(value)));
   }
 
   @Override
   public void notEqual(String name, ParseTree value) {
-    queries.add(new BooleanQuery.Builder()
-        .add(new BooleanClause(new WildcardQuery(new Term(name, "*")), SHOULD))
-        .add(new BooleanClause(getTypeMetadata(name).exactQueryBuilder
-            .apply(name, getLiteral(value)), MUST_NOT))
-        .build());
+    queries.add(getTypeMetadata(name).getExactNotQueryBuilder().apply(name, getLiteral(value)));
   }
 
   @Override
@@ -155,7 +145,7 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
 
   @Override
   public void order(String name, Token direction) {
-    sorts.add(new SortField(name, getTypeMetadata(name).sortType));
+    sorts.add(new SortField(name, getTypeMetadata(name).getSortType()));
   }
 
   @Override
@@ -229,44 +219,9 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
         .equals("INTERPRETED_STRING_LIT");
   }
 
-  @AllArgsConstructor
-  enum TypeMetadata {
-    DOUBLE(SortField.Type.DOUBLE,
-        (name, literalValue) -> DoublePoint.newExactQuery(name, Double.parseDouble(literalValue))),
-    FLOAT(SortField.Type.FLOAT,
-        (name, literalValue) -> FloatPoint.newExactQuery(name, Float.parseFloat(literalValue))),
-    LONG(SortField.Type.LONG,
-        (name, literalValue) -> LongPoint.newExactQuery(name, Long.parseLong(literalValue))),
-    INT(SortField.Type.INT,
-        (name, literalValue) -> IntPoint.newExactQuery(name, Integer.parseInt(literalValue))),
-    STRING(SortField.Type.STRING,
-        (name, literalValue) -> new TermQuery(new Term(name, literalValue)));
-
-    private final SortField.Type sortType;
-    private final BiFunction<String, String, Query> exactQueryBuilder;
-  }
-
-  private static final Map<Class<?>, TypeMetadata> typeMetadataMap =
-      ImmutableMap.<Class<?>, TypeMetadata>builder()
-          .put(Double.class, TypeMetadata.DOUBLE)
-          .put(double.class, TypeMetadata.DOUBLE)
-          .put(Float.class, TypeMetadata.FLOAT)
-          .put(float.class, TypeMetadata.FLOAT)
-          .put(Long.class, TypeMetadata.LONG)
-          .put(long.class, TypeMetadata.LONG)
-          .put(Integer.class, TypeMetadata.INT)
-          .put(int.class, TypeMetadata.INT)
-          .put(String.class, TypeMetadata.STRING)
-          .build();
-
   private TypeMetadata getTypeMetadata(String name) {
     try {
-      Class<?> type = entityType.getDeclaredField(name).getType();
-      TypeMetadata typeMetadata = FiltersQueryBuilderLuceneImpl.typeMetadataMap.get(type);
-      if (typeMetadata == null) {
-        throw new IllegalArgumentException("unsupported field type " + type);
-      }
-      return typeMetadata;
+      return TypeMetadata.get(entityType.getDeclaredField(name).getType());
     } catch (NoSuchFieldException e) {
       throw new RuntimeException(e);
     }
