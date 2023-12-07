@@ -1,4 +1,4 @@
-package org.lks.filtersquery.jpaimpl;
+package org.lks.filtersquery.api;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

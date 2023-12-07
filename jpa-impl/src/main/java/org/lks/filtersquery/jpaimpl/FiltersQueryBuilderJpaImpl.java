@@ -13,6 +13,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -20,16 +21,18 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.lks.filtersquery.api.BasicFiltersQueryBuilder;
 import org.lks.filtersquery.api.FiltersQueryBuilder;
+import org.lks.filtersquery.api.Utils;
 import org.lks.filtersquery.api.exception.IllegalParameterException;
-import org.lks.filtersquery.api.grammar.FiltersQueryParser;
 
 @RequiredArgsConstructor
-public class FiltersQueryBuilderJpaImpl<E> implements FiltersQueryBuilder {
+public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
 
   private final EntityManager em;
   private final CriteriaBuilder criteriaBuilder;
@@ -38,14 +41,10 @@ public class FiltersQueryBuilderJpaImpl<E> implements FiltersQueryBuilder {
 
   private final Stack<Integer> parenStack = new Stack<>();
   private List<Predicate> predicates = new ArrayList<>();
-  private List<Integer> operations = new ArrayList<>();
+  private List<Integer> operations = new LinkedList<>();
   private final List<Order> orders = new ArrayList<>();
   private final Map<Parameter<?>, String> parameters = new HashMap<>();
-  private Integer offset;
-  private Integer limit;
-
-  private TypedQuery<Tuple> query;
-  private TypedQuery<Tuple> countQuery;
+  private final ResultImpl result = new ResultImpl();
 
   @Getter
   @AllArgsConstructor
@@ -178,11 +177,11 @@ public class FiltersQueryBuilderJpaImpl<E> implements FiltersQueryBuilder {
   }
 
   public void offset(int offset) {
-    this.offset = offset;
+    result.offset = offset;
   }
 
   public void limit(int limit) {
-    this.limit = limit;
+    result.limit = limit;
   }
 
   @SuppressWarnings("unchecked")
@@ -193,38 +192,38 @@ public class FiltersQueryBuilderJpaImpl<E> implements FiltersQueryBuilder {
     }
 
     criteriaQuery.multiselect(criteriaBuilder.count(entity));
-    countQuery = em.createQuery(criteriaQuery);
+    result.countQuery = em.createQuery(criteriaQuery);
 
     // orders will be overwritten by SearchEngine#search with pageable
     criteriaQuery.multiselect(entity).orderBy(orders);
-    query = em.createQuery(criteriaQuery);
+    result.query = em.createQuery(criteriaQuery);
 
     for (Map.Entry<Parameter<?>, String> entry : parameters.entrySet()) {
       Parameter<Object> parameter = (Parameter<Object>) entry.getKey();
-      query.setParameter(parameter, entry.getValue());
-      countQuery.setParameter(parameter, entry.getValue());
+      result.query.setParameter(parameter, entry.getValue());
+      result.countQuery.setParameter(parameter, entry.getValue());
     }
 
-    if (offset != null) {
-      if (offset < 0) {
+    if (result.offset != null) {
+      if (result.offset < 0) {
         throw new IllegalParameterException("offset must be non-negative");
       }
-      query.setFirstResult(offset);
+      result.query.setFirstResult(result.offset);
     }
-    if (limit != null) {
-      if (limit <= 0) {
+    if (result.limit != null) {
+      if (result.limit <= 0) {
         throw new IllegalParameterException("limit must be bigger than 0");
       }
-      query.setMaxResults(limit);
+      result.query.setMaxResults(result.limit);
     }
   }
 
   @SuppressWarnings("unchecked")
   public ResultImpl build() {
-    if (query == null) {
+    if (result.query == null) {
       throw new IllegalStateException();
     }
-    return new ResultImpl(query, countQuery, offset, limit);
+    return result;
   }
 
   private Predicate mergePredicates(int startFrom) {
@@ -276,19 +275,12 @@ public class FiltersQueryBuilderJpaImpl<E> implements FiltersQueryBuilder {
     return (ParameterExpression<T>) parameter;
   }
 
-  private String getTokenName(Token token) {
-    return FiltersQueryParser.VOCABULARY.getSymbolicName(token.getType());
-  }
-
-  private String getTokenName(int tokenType) {
-    return FiltersQueryParser.VOCABULARY.getSymbolicName(tokenType);
-  }
-
   private boolean isLiteral(String name) {
     return String.class.isAssignableFrom(entity.get(name).getModel().getBindableJavaType());
   }
 
   @Getter
+  @NoArgsConstructor
   @AllArgsConstructor
   public static class ResultImpl implements FiltersQueryBuilder.Result {
 
