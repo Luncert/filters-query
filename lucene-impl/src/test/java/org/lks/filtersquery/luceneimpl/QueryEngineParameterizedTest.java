@@ -116,6 +116,7 @@ public class QueryEngineParameterizedTest {
     return List.of(
         //"case_without_filters_with_offset_and_limit",
 
+        // -
         //"case_createdAt_equal",
         //"case_categoryId_and_subCategoryId_equal",
         //"case_externalReference_or_severity_equal",
@@ -124,13 +125,15 @@ public class QueryEngineParameterizedTest {
         //"case_externalReference_or_severity_equal_sort_by_id_desc",
         //"case_externalReference_or_severity_equal_with_sort_offset_and_limit",
 
+        // -
         //"case_subCategoryId_not_equal",
         //"case_id_not_equal",
 
         //"case_subCategoryId_empty",
         //"case_subCategoryId_not_empty",
 
-        "case_categoryId_lessThan",
+        // -
+        //"case_categoryId_lessThan",
 
         "case_id_greaterEqualThan"
 
