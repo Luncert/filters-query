@@ -81,8 +81,9 @@ public class QueryEngineParameterizedTest {
   public void test() {
     String criteria = loader.extractAs(testCase + ".criteria", String.class);
     try (IndexReader indexReader = DirectoryReader.open(directory)) {
-      List<Long> ids = queryEngine.search(indexReader, criteria, doc -> doc
-          .getField("id").numericValue().longValue());
+      List<Long> ids = queryEngine.search(indexReader, criteria, stream -> stream.map(
+            doc -> doc.getField("id").numericValue().longValue()
+          ).toList());
       List<Long> expectData = loader.extractAs(testCase + ".expected", new TypeReference<>() {
       });
       TestKit.assertEquals(ids, expectData);
