@@ -2,7 +2,6 @@ package org.lks.filtersquery.luceneimpl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -18,8 +17,6 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.junit.After;
@@ -33,7 +30,7 @@ import org.lks.junitwithdata.common.TestKit;
 public class QueryEngineParameterizedTest {
 
   private final Directory directory = new RAMDirectory();
-  private final LuceneFiltersQueryEngine queryEngine = new LuceneFiltersQueryEngine();
+  private final LogHeaderQueryEngine queryEngine = new LogHeaderQueryEngine();
 
   private final TestKit.TestDataLoader loader = TestKit.load(this);
 
@@ -83,24 +80,9 @@ public class QueryEngineParameterizedTest {
   @Test
   public void test() {
     String criteria = loader.extractAs(testCase + ".criteria", String.class);
-    FiltersQueryBuilderLuceneImpl.ResultImpl result = queryEngine.buildQuery(criteria, LogHeader.class);
     try (IndexReader indexReader = DirectoryReader.open(directory)) {
-      IndexSearcher searcher = new IndexSearcher(indexReader);
-      int offset = result.getOffset() == null ? 0 : result.getOffset();
-      int limit = result.getLimit() == null ? Integer.MAX_VALUE : result.getLimit();
-
-      TopDocs topDocs = result.getSort() == null
-          ? searcher.search(result.getQuery(), offset + limit)
-          : searcher.search(result.getQuery(), offset + limit, result.getSort());
-      List<Long> ids = Arrays.stream(topDocs.scoreDocs, offset, Math.min(topDocs.scoreDocs.length, offset + limit))
-          .map(scoreDoc -> {
-            try {
-              return indexReader.document(scoreDoc.doc)
-                  .getField("id").numericValue().longValue();
-            } catch (IOException e) {
-              throw new RuntimeException(e);
-            }
-          }).toList();
+      List<Long> ids = queryEngine.search(indexReader, criteria, doc -> doc
+          .getField("id").numericValue().longValue());
       List<Long> expectData = loader.extractAs(testCase + ".expected", new TypeReference<>() {
       });
       TestKit.assertEquals(ids, expectData);

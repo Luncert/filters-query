@@ -3,6 +3,7 @@ package org.lks.filtersquery.luceneimpl.impl;
 import static org.apache.lucene.search.BooleanClause.Occur.MUST_NOT;
 import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
 
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
@@ -22,6 +23,11 @@ public class StringQueryBuilder extends BasicTypedQueryBuilder<String> {
   @Override
   public Query notEmpty(String name) {
     return notEqual(name, "[NULL_VALUE]");
+  }
+
+  @Override
+  public Object convertDocFieldToJavaType(IndexableField field) {
+    return field.stringValue();
   }
 
   @Override

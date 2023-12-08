@@ -4,11 +4,17 @@ import static org.apache.lucene.search.BooleanClause.Occur.MUST_NOT;
 import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
 
 import org.apache.lucene.document.DoublePoint;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
 
 public class DoubleQueryBuilder extends BasicTypedQueryBuilder<Double> {
+
+  @Override
+  public Object convertDocFieldToJavaType(IndexableField field) {
+    return field.numericValue().doubleValue();
+  }
 
   @Override
   public SortField.Type getSortType() {

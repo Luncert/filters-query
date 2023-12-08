@@ -1,12 +1,18 @@
 package org.lks.filtersquery.luceneimpl.impl;
 
 import org.apache.lucene.document.LongPoint;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
 
 public class LongQueryBuilder extends BasicTypedQueryBuilder<Long> {
+
+  @Override
+  public Object convertDocFieldToJavaType(IndexableField field) {
+    return field.numericValue().longValue();
+  }
 
   @Override
   public SortField.Type getSortType() {

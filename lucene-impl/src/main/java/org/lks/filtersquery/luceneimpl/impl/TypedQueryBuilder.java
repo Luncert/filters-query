@@ -1,9 +1,12 @@
 package org.lks.filtersquery.luceneimpl.impl;
 
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
 
 public interface TypedQueryBuilder<T> {
+
+  Object convertDocFieldToJavaType(IndexableField field);
 
   SortField.Type getSortType();
 

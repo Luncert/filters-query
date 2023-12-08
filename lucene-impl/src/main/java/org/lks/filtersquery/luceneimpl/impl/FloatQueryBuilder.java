@@ -4,11 +4,17 @@ import static org.apache.lucene.search.BooleanClause.Occur.MUST_NOT;
 import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
 
 import org.apache.lucene.document.FloatPoint;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
 
 public class FloatQueryBuilder extends BasicTypedQueryBuilder<Float> {
+
+  @Override
+  public Object convertDocFieldToJavaType(IndexableField field) {
+    return field.numericValue().floatValue();
+  }
 
   @Override
   public SortField.Type getSortType() {
