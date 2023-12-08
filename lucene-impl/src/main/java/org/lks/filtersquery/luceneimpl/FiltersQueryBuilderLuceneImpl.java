@@ -1,16 +1,13 @@
 package org.lks.filtersquery.luceneimpl;
 
 import static org.apache.lucene.search.BooleanClause.Occur.MUST;
-import static org.apache.lucene.search.BooleanClause.Occur.MUST_NOT;
 import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
 
-import com.google.common.collect.ImmutableMap;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
+import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,19 +15,15 @@ import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.RegexpQuery;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TermRangeQuery;
-import org.apache.lucene.util.BytesRef;
 import org.lks.filtersquery.api.BasicFiltersQueryBuilder;
 import org.lks.filtersquery.api.FiltersQueryBuilder;
 import org.lks.filtersquery.api.Utils;
+import org.lks.filtersquery.api.exception.UnsupportedSyntaxException;
 import org.lks.filtersquery.luceneimpl.impl.TypedQueryBuilder;
 import org.lks.filtersquery.luceneimpl.impl.TypedQueryBuilders;
 
@@ -122,12 +115,15 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
 
   @Override
   public void order(String name, Token direction) {
+    if (direction != null) {
+      throw new UnsupportedSyntaxException(getTokenName(direction));
+    }
     sorts.add(new SortField(name, getTypeMetadata(name).getSortType()));
   }
 
   @Override
   public void offset(int offset) {
-    result.offset = offset;
+    throw new UnsupportedSyntaxException("offset");
   }
 
   @Override
@@ -146,9 +142,6 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
   @Override
   @SuppressWarnings("unchecked")
   public ResultImpl build() {
-    if (result.query == null) {
-      throw new IllegalStateException();
-    }
     return result;
   }
 
@@ -210,9 +203,9 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
   @AllArgsConstructor
   public static class ResultImpl implements FiltersQueryBuilder.Result {
 
+    @Nullable
     private Query query;
     private Sort sort;
-    private Integer offset;
     private Integer limit;
   }
 }

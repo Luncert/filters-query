@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -19,11 +18,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
@@ -113,10 +108,26 @@ public class QueryEngineParameterizedTest {
   @Parameterized.Parameters(name = "{0}")
   public static Collection<Object> data() {
     return List.of(
-        //"case_without_filters_with_offset_and_limit",
-        //"case_externalReference_or_severity_equal_with_offset_and_limit",
-        //"case_externalReference_or_severity_equal_sort_by_id_desc",
-        "case_externalReference_or_severity_equal_with_sort_offset_and_limit"
+        "case_without_filters_with_limit",
+        "case_createdAt_equal",
+        "case_categoryId_and_subCategoryId_equal",
+        "case_externalReference_or_severity_equal",
+        "case_externalReference_or_severity_equal_with_limit",
+        "case_externalReference_or_severity_equal_sort_by_id",
+        "case_externalReference_or_severity_equal_with_sort_limit",
+        "case_subCategoryId_not_equal",
+        "case_id_not_equal",
+        "case_subCategoryId_empty",
+        "case_subCategoryId_not_empty",
+        "case_categoryId_lessThan",
+        "case_id_greaterEqualThan",
+        "case_id_greaterThan",
+        "case_id_lessEqualThan",
+        "case_id_lessThan",
+        "case_id_between",
+        "case_externalReference_startsWith",
+        "case_externalReference_endsWith",
+        "case_paren"
     );
   }
 

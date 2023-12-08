@@ -4,7 +4,7 @@ import VariableLexer;
 // TODO: support in range filter
 
 filtersQuery:
-    WS? filterBy ((sortBy (offset limit)?) | (offset limit sortBy?))? WS? EOF
+    WS? filterBy sortBy? offset? limit? WS? EOF
     ;
 
 filterBy:
@@ -80,7 +80,7 @@ sorts:
     ;
 
 order:
-    propertyName WS (ASC | DESC)
+    propertyName (WS (ASC | DESC))?
     ;
 
 offset:

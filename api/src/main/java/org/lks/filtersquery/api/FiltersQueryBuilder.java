@@ -41,6 +41,11 @@ public interface FiltersQueryBuilder {
 
   void like(String name, ParseTree value);
 
+  /**
+   * Add order.
+   * @param name order by field name
+   * @param direction optional, ASC or DESC
+   */
   void order(String name, Token direction);
 
   void offset(int offset);
