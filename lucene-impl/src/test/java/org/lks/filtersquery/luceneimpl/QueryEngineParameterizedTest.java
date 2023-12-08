@@ -86,19 +86,21 @@ public class QueryEngineParameterizedTest {
     FiltersQueryBuilderLuceneImpl.ResultImpl result = queryEngine.buildQuery(criteria, LogHeader.class);
     try (IndexReader indexReader = DirectoryReader.open(directory)) {
       IndexSearcher searcher = new IndexSearcher(indexReader);
-      int limit = result.getLimit() == null ? 1000 : result.getLimit();
-      TopDocs topDocs = result.getSort() == null
-          ? searcher.search(result.getQuery(), limit)
-          : searcher.search(result.getQuery(), limit, result.getSort());
+      int offset = result.getOffset() == null ? 0 : result.getOffset();
+      int limit = result.getLimit() == null ? Integer.MAX_VALUE : result.getLimit();
 
-      List<Long> ids = Arrays.stream(topDocs.scoreDocs).map(scoreDoc -> {
-        try {
-          return indexReader.document(scoreDoc.doc)
-              .getField("id").numericValue().longValue();
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-      }).toList();
+      TopDocs topDocs = result.getSort() == null
+          ? searcher.search(result.getQuery(), offset + limit)
+          : searcher.search(result.getQuery(), offset + limit, result.getSort());
+      List<Long> ids = Arrays.stream(topDocs.scoreDocs, offset, Math.min(topDocs.scoreDocs.length, offset + limit))
+          .map(scoreDoc -> {
+            try {
+              return indexReader.document(scoreDoc.doc)
+                  .getField("id").numericValue().longValue();
+            } catch (IOException e) {
+              throw new RuntimeException(e);
+            }
+          }).toList();
       List<Long> expectData = loader.extractAs(testCase + ".expected", new TypeReference<>() {
       });
       TestKit.assertEquals(ids, expectData);
@@ -114,7 +116,7 @@ public class QueryEngineParameterizedTest {
         "case_externalReference_or_severity_equal",
         "case_externalReference_or_severity_equal_with_limit",
         "case_externalReference_or_severity_equal_sort_by_id",
-        "case_externalReference_or_severity_equal_with_sort_limit",
+        "case_externalReference_or_severity_equal_with_sort_by_id_offset_and_limit",
         "case_subCategoryId_not_equal",
         "case_id_not_equal",
         "case_subCategoryId_empty",

@@ -123,7 +123,7 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
 
   @Override
   public void offset(int offset) {
-    throw new UnsupportedSyntaxException("offset");
+    result.offset = offset;
   }
 
   @Override
@@ -206,6 +206,7 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
     @Nullable
     private Query query;
     private Sort sort;
+    private Integer offset;
     private Integer limit;
   }
 }

@@ -26,13 +26,14 @@ public class LuceneFiltersQueryOrmEngine<E> extends LuceneFiltersQueryEngine {
       // TODO
     }
 
-    int limit = result.getLimit() == null ? 1000 : result.getLimit();
+    int offset = result.getOffset() == null ? 0 : result.getOffset();
+    int limit = result.getLimit() == null ? Integer.MAX_VALUE : result.getLimit();
 
     IndexSearcher searcher = new IndexSearcher(indexReader);
     TopDocs topDocs = result.getSort() == null
-        ? searcher.search(result.getQuery(), limit)
-        : searcher.search(result.getQuery(), limit, result.getSort());
-    return Arrays.stream(topDocs.scoreDocs)
+        ? searcher.search(result.getQuery(), offset + limit)
+        : searcher.search(result.getQuery(), offset + limit, result.getSort());
+    return Arrays.stream(topDocs.scoreDocs, offset, Math.min(topDocs.scoreDocs.length, offset + limit))
         .map(scoreDoc -> {
           try {
             return indexReader.document(scoreDoc.doc);

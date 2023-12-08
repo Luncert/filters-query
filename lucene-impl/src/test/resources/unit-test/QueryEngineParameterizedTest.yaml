@@ -16,9 +16,9 @@ case_externalReference_or_severity_equal_with_limit:
 case_externalReference_or_severity_equal_sort_by_id:
   criteria: 'filter by externalReference="ext03" or severity = "Success" sort   by id'
   expected: [6, 7, 8, 9]
-case_externalReference_or_severity_equal_with_sort_limit:
-  criteria: 'filter by externalReference="ext03" or severity = "Success" sort by id limit 1'
-  expected: [6]
+case_externalReference_or_severity_equal_with_sort_by_id_offset_and_limit:
+  criteria: 'filter by externalReference="ext03" or severity = "Success" sort by id offset 1 limit 1'
+  expected: [7]
 case_subCategoryId_not_equal:
   criteria: 'filter by subCategoryId!="SC1" sort by id'
   expected: [-1, 2, 3, 5, 6, 8, 9]
