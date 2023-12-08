@@ -13,7 +13,7 @@
     "severity": "Error",
     "categoryId": "C",
     "subCategoryId": "SC3",
-    "createdAt": "1683018600000"
+    "createdAt": "1682932200000"
   },
   {
     "id": "3",
@@ -21,7 +21,7 @@
     "severity": "Error",
     "categoryId": "C",
     "subCategoryId": "SC2",
-    "createdAt": "1683018600000"
+    "createdAt": "1682932200000"
   },
   {
     "id": "4",
@@ -36,14 +36,14 @@
     "severity": "Warning",
     "categoryId": "C",
     "subCategoryId": "SC3",
-    "createdAt": "1683018600000"
+    "createdAt": "1682932200001"
   },
   {
     "id": "6",
     "externalReference": "ext03",
     "severity": "Warning",
     "categoryId": "C",
-    "createdAt": "1683018600000"
+    "createdAt": "1682932200001"
   },
   {
     "id": "7",
@@ -51,7 +51,7 @@
     "severity": "Success",
     "categoryId": "C",
     "subCategoryId": "SC1",
-    "createdAt": "1682932200000"
+    "createdAt": "1682932200001"
   },
   {
     "id": "8",
@@ -59,14 +59,14 @@
     "severity": "Success",
     "categoryId": "C",
     "subCategoryId": "SC3",
-    "createdAt": "1683018600000"
+    "createdAt": "1682932200002"
   },
   {
     "id": "9",
     "externalReference": "ext05",
     "severity": "Success",
     "subCategoryId": "SC2",
-    "createdAt": "1683018600000"
+    "createdAt": "1682932200002"
   },
   {
     "id": "-1",

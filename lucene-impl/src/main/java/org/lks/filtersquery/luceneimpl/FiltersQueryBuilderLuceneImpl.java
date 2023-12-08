@@ -25,7 +25,7 @@ import org.apache.lucene.search.SortedNumericSortField;
 import org.lks.filtersquery.api.BasicFiltersQueryBuilder;
 import org.lks.filtersquery.api.FiltersQueryBuilder;
 import org.lks.filtersquery.api.Utils;
-import org.lks.filtersquery.api.exception.UnsupportedSyntaxException;
+import org.lks.filtersquery.luceneimpl.exception.FiltersQueryLucenceBuilderException;
 import org.lks.filtersquery.luceneimpl.impl.TypedQueryBuilder;
 import org.lks.filtersquery.luceneimpl.impl.TypedQueryBuilders;
 
@@ -197,7 +197,7 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
     try {
       return TypedQueryBuilders.get((Class<T>) entityType.getDeclaredField(name).getType());
     } catch (NoSuchFieldException e) {
-      throw new RuntimeException(e);
+      throw new FiltersQueryLucenceBuilderException(e);
     }
   }
 

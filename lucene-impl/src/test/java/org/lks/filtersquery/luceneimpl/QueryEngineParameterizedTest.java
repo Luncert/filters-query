@@ -50,6 +50,7 @@ public class QueryEngineParameterizedTest {
         document.add(new NumericDocValuesField("id", source.getId()));
         document.add(new LongPoint("id", source.getId()));
         document.add(new StoredField("id", source.getId()));
+        document.add(new NumericDocValuesField("createdAt", source.getCreatedAt()));
         document.add(new LongPoint("createdAt", source.getCreatedAt()));
         document.add(new StoredField("createdAt", source.getCreatedAt()));
         document.add(new StringField("externalReference",
@@ -95,6 +96,10 @@ public class QueryEngineParameterizedTest {
     return List.of(
         "case_without_filters_with_limit",
         "case_createdAt_equal",
+        "case_createdAt_lessThan",
+        "case_createdAt_lessEqualThan",
+        "case_createdAt_greaterThan",
+        "case_createdAt_greaterEqualThan",
         "case_categoryId_and_subCategoryId_equal",
         "case_externalReference_or_severity_equal",
         "case_externalReference_or_severity_equal_with_limit",

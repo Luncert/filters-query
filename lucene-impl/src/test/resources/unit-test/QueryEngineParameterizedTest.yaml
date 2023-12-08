@@ -3,7 +3,19 @@ case_without_filters_with_limit:
   expected: [9, 8]
 case_createdAt_equal:
   criteria: "filter by createdAt = 1682932200000"
-  expected: [1, 4, 7]
+  expected: [1, 2, 3, 4]
+case_createdAt_lessThan:
+  criteria: "filter by createdAt < 1682932200002"
+  expected: [1, 2, 3, 4, 5, 6, 7, -1] # -1 has default value 0
+case_createdAt_lessEqualThan:
+  criteria: "filter by createdAt <= 1682932200001"
+  expected: [1, 2, 3, 4, 5, 6, 7, -1]  # -1 has default value 0
+case_createdAt_greaterThan:
+  criteria: "filter by createdAt > 1682932200000"
+  expected: [5, 6, 7, 8, 9]
+case_createdAt_greaterEqualThan:
+  criteria: "filter by createdAt >= 1682932200001"
+  expected: [5, 6, 7, 8, 9]
 case_categoryId_and_subCategoryId_equal:
   criteria: 'filter by categoryId = "C" and subCategoryId = "SC2"'
   expected: [3]

@@ -8,4 +8,8 @@ public class FiltersQueryException extends RuntimeException {
   public FiltersQueryException(String message) {
     super(message);
   }
+
+  public FiltersQueryException(Throwable cause) {
+    super(cause);
+  }
 }
