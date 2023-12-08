@@ -80,7 +80,7 @@ sorts:
     ;
 
 order:
-    propertyName (WS (ASC | DESC))?
+    propertyName WS (ASC | DESC)
     ;
 
 offset:

@@ -17,9 +17,11 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.SortedNumericSortField;
 import org.lks.filtersquery.api.BasicFiltersQueryBuilder;
 import org.lks.filtersquery.api.FiltersQueryBuilder;
 import org.lks.filtersquery.api.Utils;
@@ -115,10 +117,8 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
 
   @Override
   public void order(String name, Token direction) {
-    if (direction != null) {
-      throw new UnsupportedSyntaxException(getTokenName(direction));
-    }
-    sorts.add(new SortField(name, getTypeMetadata(name).getSortType()));
+    sorts.add(new SortedNumericSortField(name, getTypeMetadata(name).getSortType(),
+        getTokenName(direction).equals("DESC")));
   }
 
   @Override
@@ -134,6 +134,9 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
   @Override
   public void end() {
     result.query = mergeQueries(0);
+    if (result.query == null) {
+      result.query = new MatchAllDocsQuery();
+    }
     if (!sorts.isEmpty()) {
       result.sort = new Sort(sorts.toArray(new SortField[0]));
     }

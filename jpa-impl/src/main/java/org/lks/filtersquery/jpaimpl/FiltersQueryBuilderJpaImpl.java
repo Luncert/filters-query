@@ -172,9 +172,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   }
 
   public void order(String name, Token direction) {
-    // default is asc
-    String tokenName = direction == null ? "ASC" : getTokenName(direction);
-    orders.add(tokenName.equals("ASC")
+    orders.add(getTokenName(direction).equals("ASC")
         ? criteriaBuilder.asc(entity.get(name))
         : criteriaBuilder.desc(entity.get(name)));
   }

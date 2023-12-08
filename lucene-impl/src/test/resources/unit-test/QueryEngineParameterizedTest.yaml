@@ -1,5 +1,5 @@
 case_without_filters_with_limit:
-  criteria: "filter by () sort by id limit 2"
+  criteria: "filter by () sort by id desc limit 2"
   expected: [9, 8]
 case_createdAt_equal:
   criteria: "filter by createdAt = 1682932200000"
@@ -14,16 +14,16 @@ case_externalReference_or_severity_equal_with_limit:
   criteria: 'filter by externalReference="ext03" or severity = "Success" limit 2'
   expected: [6, 7]
 case_externalReference_or_severity_equal_sort_by_id:
-  criteria: 'filter by externalReference="ext03" or severity = "Success" sort   by id'
+  criteria: 'filter by externalReference="ext03" or severity = "Success" sort   by id asc'
   expected: [6, 7, 8, 9]
 case_externalReference_or_severity_equal_with_sort_by_id_offset_and_limit:
-  criteria: 'filter by externalReference="ext03" or severity = "Success" sort by id offset 1 limit 1'
+  criteria: 'filter by externalReference="ext03" or severity = "Success" sort by id asc offset 1 limit 1'
   expected: [7]
 case_subCategoryId_not_equal:
-  criteria: 'filter by subCategoryId!="SC1" sort by id'
+  criteria: 'filter by subCategoryId!="SC1" sort by id asc'
   expected: [-1, 2, 3, 5, 6, 8, 9]
 case_id_not_equal:
-  criteria: 'filter by id!=0 and id!=1 and id!=2 and id!=3 sort by id'
+  criteria: 'filter by id!=0 and id!=1 and id!=2 and id!=3 sort by id asc'
   expected: [-1, 4, 5, 6, 7, 8, 9]
 case_subCategoryId_empty:
   criteria: 'filter by subCategoryId=empty'
