@@ -25,6 +25,13 @@ public class LuceneFiltersQueryOrmEngine<E> extends LuceneFiltersQueryEngine {
         .getGenericSuperclass()).getActualTypeArguments()[0];
   }
 
+  protected long count(IndexReader indexReader, String criteria) throws IOException {
+    FiltersQueryBuilderLuceneImpl.ResultImpl result = buildQuery(criteria, entityType);
+    IndexSearcher searcher = new IndexSearcher(indexReader);
+    TopDocs topDocs = searcher.search(result.getQuery(), Integer.MAX_VALUE);
+    return topDocs.totalHits;
+  }
+
   public List<E> search(IndexReader indexReader, String criteria) throws IOException {
     return search(indexReader, criteria, this::toEntities);
   }
