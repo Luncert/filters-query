@@ -97,8 +97,8 @@ public class FiltersQueryListenerImpl extends FiltersQueryBaseListener {
 
   @Override
   public void enterOrder(FiltersQueryParser.OrderContext ctx) {
-    queryBuilder.order(ctx.propertyName().getText(),
-        ctx.getChildCount() > 1 ? ((TerminalNode) ctx.getChild(ctx.getChildCount() - 1)).getSymbol() : null);
+    queryBuilder.order(ctx.propertyName().getText(), ctx.getChildCount() > 1
+        ? ((TerminalNode) ctx.getChild(ctx.getChildCount() - 1)).getSymbol() : null);
   }
 
   @Override

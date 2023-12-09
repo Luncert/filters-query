@@ -23,9 +23,9 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.SortedNumericSortField;
 import org.luncert.filtersquery.api.BasicFiltersQueryBuilder;
 import org.luncert.filtersquery.api.FiltersQueryBuilder;
-import org.luncert.filtersquery.luceneimpl.exception.FiltersQueryLucenceBuilderException;
 import org.luncert.filtersquery.luceneimpl.builder.TypedQueryBuilder;
 import org.luncert.filtersquery.luceneimpl.builder.TypedQueryBuilders;
+import org.luncert.filtersquery.luceneimpl.exception.FiltersQueryLucenceBuilderException;
 
 @RequiredArgsConstructor
 public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {

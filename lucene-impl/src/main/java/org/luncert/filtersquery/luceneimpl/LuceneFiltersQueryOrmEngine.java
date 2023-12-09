@@ -66,8 +66,8 @@ public class LuceneFiltersQueryOrmEngine<E> extends LuceneFiltersQueryEngine {
 
       try {
         obj = entityType.getDeclaredConstructor().newInstance();
-      } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
-               IllegalAccessException e) {
+      } catch (NoSuchMethodException | InvocationTargetException | InstantiationException
+               | IllegalAccessException e) {
         throw new RuntimeException("failed to initialize " + entityType, e);
       }
 

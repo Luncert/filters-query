@@ -60,6 +60,7 @@ public class DoubleQueryBuilder extends BasicTypedQueryBuilder<Double> {
 
   @Override
   public Query between(String name, String startValue, String endValue) {
-    return DoublePoint.newRangeQuery(name, Double.parseDouble(startValue), Double.parseDouble(endValue));
+    return DoublePoint.newRangeQuery(name, Double.parseDouble(startValue),
+        Double.parseDouble(endValue));
   }
 }

@@ -88,7 +88,8 @@ public abstract class BasicTypedPredicateBuilder<E> implements TypedPredicateBui
         || StringUtils.isNotEmpty((String) fieldValue);
   }
 
-  protected boolean compare(E obj, String name, Double target, BiPredicate<Integer, Boolean> predicate) {
+  protected boolean compare(E obj, String name, Double target,
+                            BiPredicate<Integer, Boolean> predicate) {
     int r = compare(obj, name, target);
     return predicate.test(r, r == CONTAINS_NULL);
   }
@@ -98,7 +99,8 @@ public abstract class BasicTypedPredicateBuilder<E> implements TypedPredicateBui
     return compare(fieldValue, target, Double::compareTo);
   }
 
-  protected boolean compare(E obj, String name, Float target, BiPredicate<Integer, Boolean> predicate) {
+  protected boolean compare(E obj, String name, Float target,
+                            BiPredicate<Integer, Boolean> predicate) {
     int r = compare(obj, name, target);
     return predicate.test(r, r == CONTAINS_NULL);
   }
@@ -108,7 +110,8 @@ public abstract class BasicTypedPredicateBuilder<E> implements TypedPredicateBui
     return compare(fieldValue, target, Float::compareTo);
   }
 
-  protected boolean compare(E obj, String name, Integer target, BiPredicate<Integer, Boolean> predicate) {
+  protected boolean compare(E obj, String name, Integer target,
+                            BiPredicate<Integer, Boolean> predicate) {
     int r = compare(obj, name, target);
     return predicate.test(r, r == CONTAINS_NULL);
   }
@@ -118,7 +121,8 @@ public abstract class BasicTypedPredicateBuilder<E> implements TypedPredicateBui
     return compare(fieldValue, target, Integer::compareTo);
   }
 
-  protected boolean compare(E obj, String name, Long target, BiPredicate<Integer, Boolean> predicate) {
+  protected boolean compare(E obj, String name, Long target,
+                            BiPredicate<Integer, Boolean> predicate) {
     int r = compare(obj, name, target);
     return predicate.test(r, r == CONTAINS_NULL);
   }
@@ -128,7 +132,8 @@ public abstract class BasicTypedPredicateBuilder<E> implements TypedPredicateBui
     return compare(fieldValue, target, Long::compareTo);
   }
 
-  protected boolean compare(E obj, String name, String target, BiPredicate<Integer, Boolean> predicate) {
+  protected boolean compare(E obj, String name, String target,
+                            BiPredicate<Integer, Boolean> predicate) {
     int r = compare(obj, name, target);
     return predicate.test(r, r == CONTAINS_NULL);
   }

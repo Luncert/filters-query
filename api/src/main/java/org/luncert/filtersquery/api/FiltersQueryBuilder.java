@@ -43,6 +43,7 @@ public interface FiltersQueryBuilder {
 
   /**
    * Add order.
+   *
    * @param name order by field name
    * @param direction optional, ASC or DESC
    */

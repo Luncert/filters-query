@@ -27,8 +27,10 @@ public class LongQueryBuilder extends BasicTypedQueryBuilder<Long> {
   @Override
   public Query notEqual(String name, String literalValue) {
     return new BooleanQuery.Builder()
-        .add(LongPoint.newRangeQuery(name, Long.MIN_VALUE, Long.MAX_VALUE), BooleanClause.Occur.SHOULD)
-        .add(LongPoint.newExactQuery(name, Long.parseLong(literalValue)), BooleanClause.Occur.MUST_NOT)
+        .add(LongPoint.newRangeQuery(name, Long.MIN_VALUE, Long.MAX_VALUE),
+            BooleanClause.Occur.SHOULD)
+        .add(LongPoint.newExactQuery(name, Long.parseLong(literalValue)),
+            BooleanClause.Occur.MUST_NOT)
         .build();
   }
 

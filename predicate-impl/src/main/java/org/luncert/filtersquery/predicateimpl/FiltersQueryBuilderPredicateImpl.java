@@ -95,7 +95,8 @@ public class FiltersQueryBuilderPredicateImpl<E> extends BasicFiltersQueryBuilde
 
   @Override
   public void between(String name, ParseTree startValue, ParseTree endValue) {
-    predicates.add(getTypeMetadata(name).between(name, getLiteral(startValue), getLiteral(endValue)));
+    predicates.add(getTypeMetadata(name).between(
+        name, getLiteral(startValue), getLiteral(endValue)));
   }
 
   @Override
@@ -145,7 +146,8 @@ public class FiltersQueryBuilderPredicateImpl<E> extends BasicFiltersQueryBuilde
   @SuppressWarnings("unchecked")
   private TypedPredicateBuilder<E> getTypeMetadata(String name) {
     try {
-      return (TypedPredicateBuilder<E>) TypedPredicateBuilders.get(entityType.getDeclaredField(name).getType());
+      return (TypedPredicateBuilder<E>) TypedPredicateBuilders.get(
+          entityType.getDeclaredField(name).getType());
     } catch (NoSuchFieldException e) {
       throw new FiltersQueryPredicateBuilderException(e);
     }
