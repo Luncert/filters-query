@@ -1,6 +1,8 @@
 package org.lks.filtersquery.api;
 
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.lks.filtersquery.api.grammar.FiltersQueryParser;
 
 public abstract class BasicFiltersQueryBuilder implements FiltersQueryBuilder {
@@ -11,5 +13,17 @@ public abstract class BasicFiltersQueryBuilder implements FiltersQueryBuilder {
 
   protected String getTokenName(int tokenType) {
     return FiltersQueryParser.VOCABULARY.getSymbolicName(tokenType);
+  }
+
+
+  protected String getLiteral(ParseTree value) {
+    return isStringLiteral(value)
+        ? Utils.unwrap(value.getText(), '"')
+        : value.getText();
+  }
+
+  protected boolean isStringLiteral(ParseTree value) {
+    return getTokenName(((TerminalNode) value).getSymbol())
+        .equals("INTERPRETED_STRING_LIT");
   }
 }

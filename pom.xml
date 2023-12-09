@@ -13,6 +13,7 @@
     <module>api</module>
     <module>jpa-impl</module>
     <module>lucene-impl</module>
+    <module>predicate-impl</module>
   </modules>
 
   <properties>

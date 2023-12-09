@@ -1,4 +1,4 @@
-package org.lks.filtersquery.luceneimpl.impl;
+package org.lks.filtersquery.luceneimpl.builder;
 
 import static org.apache.lucene.search.BooleanClause.Occur.MUST_NOT;
 import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;

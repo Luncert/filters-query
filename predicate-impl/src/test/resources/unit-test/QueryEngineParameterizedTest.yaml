@@ -1,0 +1,63 @@
+case_without_filters:
+  criteria: "filter by ()"
+  expected: [1, 2, 3, 4, 5, 6, 7, 8, 9, -1]
+case_createdAt_equal:
+  criteria: "filter by createdAt = 1682932200000"
+  expected: [1, 2, 3, 4]
+case_createdAt_lessThan:
+  criteria: "filter by createdAt < 1682932200002"
+  expected: [1, 2, 3, 4, 5, 6, 7, -1] # -1 has default value 0
+case_createdAt_lessEqualThan:
+  criteria: "filter by createdAt <= 1682932200001"
+  expected: [1, 2, 3, 4, 5, 6, 7, -1]  # -1 has default value 0
+case_createdAt_greaterThan:
+  criteria: "filter by createdAt > 1682932200000"
+  expected: [5, 6, 7, 8, 9]
+case_createdAt_greaterEqualThan:
+  criteria: "filter by createdAt >= 1682932200001"
+  expected: [5, 6, 7, 8, 9]
+case_categoryId_and_subCategoryId_equal:
+  criteria: 'filter by categoryId = "C" and subCategoryId = "SC2"'
+  expected: [3]
+case_externalReference_or_severity_equal:
+  criteria: 'filter by externalReference="ext03" or severity = "Success"'
+  expected: [6, 7, 8, 9]
+case_subCategoryId_not_equal:
+  criteria: 'filter by subCategoryId!="SC1"'
+  expected: [2, 3, 5, 6, 8, 9, -1]
+case_id_not_equal:
+  criteria: 'filter by id!=0 and id!=1 and id!=2 and id!=3'
+  expected: [4, 5, 6, 7, 8, 9, -1]
+case_subCategoryId_empty:
+  criteria: 'filter by subCategoryId=empty'
+  expected: [6, -1]
+case_subCategoryId_not_empty:
+  criteria: 'filter by subCategoryId!=empty'
+  expected: [1, 2, 3, 4, 5, 7, 8, 9]
+case_categoryId_lessThan:
+  criteria: 'filter by categoryId < "C"'
+  expected: [1]
+case_id_greaterEqualThan:
+  criteria: 'filter by id >= 8'
+  expected: [8, 9]
+case_id_greaterThan:
+  criteria: 'filter by id > 8'
+  expected: [9]
+case_id_lessEqualThan:
+  criteria: 'filter by id <= 2'
+  expected: [1, 2, -1]
+case_id_lessThan:
+  criteria: 'filter by id < 2'
+  expected: [1, -1]
+case_id_between:
+  criteria: 'filter by id between [2, 8]'
+  expected: [2, 3, 4, 5, 6, 7, 8]
+case_externalReference_startsWith:
+  criteria: 'filter by externalReference startsWith "ext"'
+  expected: [4, 6, 7, 8, 9]
+case_externalReference_endsWith:
+  criteria: 'filter by externalReference endsWith "03"'
+  expected: [3, 6]
+case_paren:
+  criteria: 'filter   by (externalReference endsWith "03") and id > 5'
+  expected: [6]

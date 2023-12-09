@@ -1,4 +1,4 @@
-package org.lks.filtersquery.luceneimpl.impl;
+package org.lks.filtersquery.luceneimpl.builder;
 
 import org.apache.lucene.search.Query;
 

@@ -1,4 +1,4 @@
-package org.lks.filtersquery.luceneimpl.impl;
+package org.lks.filtersquery.luceneimpl.builder;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;

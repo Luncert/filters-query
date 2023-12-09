@@ -1,4 +1,4 @@
-package org.lks.filtersquery.luceneimpl.impl;
+package org.lks.filtersquery.luceneimpl.builder;
 
 import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.index.IndexableField;

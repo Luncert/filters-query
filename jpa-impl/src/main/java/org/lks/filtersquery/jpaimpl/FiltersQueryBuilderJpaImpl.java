@@ -46,16 +46,6 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   private final Map<Parameter<?>, String> parameters = new HashMap<>();
   private final ResultImpl result = new ResultImpl();
 
-  @Getter
-  @AllArgsConstructor
-  public static class Result {
-
-    private TypedQuery<Tuple> query;
-    private TypedQuery<Tuple> countQuery;
-    private Integer offset;
-    private Integer limit;
-  }
-
   public void enterParentheses() {
     parenStack.push(predicates.size());
   }

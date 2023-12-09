@@ -10,7 +10,7 @@ import org.lks.filtersquery.api.grammar.FiltersQueryParser;
 
 public abstract class FiltersQueryEngine {
 
-  protected <T extends FiltersQueryBuilder.Result> T buildQuery(
+  protected static <T extends FiltersQueryBuilder.Result> T buildQuery(
       String criteria, FiltersQueryBuilder criteriaBuilder) {
     FiltersQueryLexer lexer = new FiltersQueryLexer(CharStreams.fromString(criteria));
     lexer.removeErrorListeners();

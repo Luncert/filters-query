@@ -26,8 +26,8 @@ import org.lks.filtersquery.api.BasicFiltersQueryBuilder;
 import org.lks.filtersquery.api.FiltersQueryBuilder;
 import org.lks.filtersquery.api.Utils;
 import org.lks.filtersquery.luceneimpl.exception.FiltersQueryLucenceBuilderException;
-import org.lks.filtersquery.luceneimpl.impl.TypedQueryBuilder;
-import org.lks.filtersquery.luceneimpl.impl.TypedQueryBuilders;
+import org.lks.filtersquery.luceneimpl.builder.TypedQueryBuilder;
+import org.lks.filtersquery.luceneimpl.builder.TypedQueryBuilders;
 
 @RequiredArgsConstructor
 public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
@@ -179,17 +179,6 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
     }
 
     return query;
-  }
-
-  private String getLiteral(ParseTree value) {
-    return isStringLiteral(value)
-        ? Utils.unwrap(value.getText(), '"')
-        : value.getText();
-  }
-
-  private boolean isStringLiteral(ParseTree value) {
-    return getTokenName(((TerminalNode) value).getSymbol())
-        .equals("INTERPRETED_STRING_LIT");
   }
 
   @SuppressWarnings("unchecked")

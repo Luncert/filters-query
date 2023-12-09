@@ -13,7 +13,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.TopDocs;
-import org.lks.filtersquery.luceneimpl.impl.TypedQueryBuilders;
+import org.lks.filtersquery.luceneimpl.builder.TypedQueryBuilders;
 
 public class LuceneFiltersQueryOrmEngine<E> extends LuceneFiltersQueryEngine {
 
