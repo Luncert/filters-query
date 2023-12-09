@@ -10,7 +10,7 @@
     <appender-ref ref="STDOUT"/>
   </root>
 
-  <logger name="com.lks.searchengine.TestApp" level="TRACE"/>
+  <logger name="com.luncert.filtersquery.jpaimpl.TestApp" level="TRACE"/>
   <logger name="org.springframework" level="ERROR"/>
   <logger name="org.cloudfoundry" level="ERROR"/>
   <logger name="org.apache.kafka" level="ERROR"/>

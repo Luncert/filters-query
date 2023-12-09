@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.lks.filters-query</groupId>
+    <groupId>org.luncert.filters-query</groupId>
     <artifactId>filters-query</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
@@ -11,7 +11,6 @@
   <packaging>jar</packaging>
 
   <name>predicate-impl</name>
-  <url>http://maven.apache.org</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,7 +38,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.lks.filters-query</groupId>
+      <groupId>org.luncert.filters-query</groupId>
       <artifactId>api</artifactId>
       <version>1.0-SNAPSHOT</version>
       <scope>compile</scope>
