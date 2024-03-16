@@ -17,7 +17,8 @@ import org.luncert.filtersquery.api.criteria.spec.ISortByAndPaginationAndBuildSp
  *    .build()
  * </pre>
  */
-public class CriteriaBuilder implements IFilterBySpec, ISortByAndPaginationAndBuildSpec, ILimitSpec {
+public class CriteriaBuilder implements IFilterBySpec,
+    ISortByAndPaginationAndBuildSpec, ILimitSpec {
 
   private Predicate predicate;
   private Sort[] sorts;
@@ -63,7 +64,8 @@ public class CriteriaBuilder implements IFilterBySpec, ISortByAndPaginationAndBu
       builder.append(first.name()).append(' ').append(first.order().getIdenticalName());
       for (int i = 1; i < sorts.length; i++) {
         Sort sort = sorts[i];
-        builder.append(", ").append(sort.name()).append(' ').append(sort.order().getIdenticalName());
+        builder.append(", ").append(sort.name()).append(' ')
+            .append(sort.order().getIdenticalName());
       }
     }
 

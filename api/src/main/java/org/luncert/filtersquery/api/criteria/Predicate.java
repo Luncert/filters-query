@@ -5,7 +5,7 @@ import org.luncert.filtersquery.api.criteria.predicate.OrPredicate;
 
 public interface Predicate {
 
-  static Predicate and(Predicate predicate1, Predicate predicate2, Predicate...predicates) {
+  static Predicate and(Predicate predicate1, Predicate predicate2, Predicate... predicates) {
     Predicate[] arr = new Predicate[2 + predicates.length];
     arr[0] = predicate1;
     arr[1] = predicate2;
@@ -13,7 +13,7 @@ public interface Predicate {
     return new AndPredicate(arr);
   }
 
-  static Predicate or(Predicate predicate1, Predicate predicate2, Predicate...predicates) {
+  static Predicate or(Predicate predicate1, Predicate predicate2, Predicate... predicates) {
     Predicate[] arr = new Predicate[2 + predicates.length];
     arr[0] = predicate1;
     arr[1] = predicate2;
