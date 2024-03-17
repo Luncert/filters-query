@@ -61,6 +61,6 @@ public class QueryCriteriaBuilder implements IFilterBySpec,
 
   @Override
   public QueryCriteria build() {
-    return new QueryCriteria(predicate, new Sorts(List.of(sorts)), offset, limit);
+    return new QueryCriteria(predicate, new Sorts(sorts == null ? null : List.of(sorts)), offset, limit);
   }
 }
