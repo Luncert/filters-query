@@ -10,8 +10,9 @@ public class QueryCriteria {
   private Integer offset;
   private Integer limit;
 
-  public void modifyPredicate(PredicateModifier modifier) {
+  public QueryCriteria modifyPredicate(PredicateModifier modifier) {
     predicate = modifier.modify(predicate);
+    return this;
   }
 
   @Override
