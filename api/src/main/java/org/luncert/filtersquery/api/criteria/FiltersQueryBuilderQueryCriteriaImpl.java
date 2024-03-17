@@ -136,7 +136,7 @@ public class FiltersQueryBuilderQueryCriteriaImpl extends BasicFiltersQueryBuild
   @Override
   public void end() {
     Predicate predicate = mergePredicates(0);
-    result.queryCriteria = new QueryCriteria(predicate, sorts.toArray(new Sort[0]), offset, limit);
+    result.queryCriteria = new QueryCriteria(predicate, new Sorts(sorts), offset, limit);
   }
 
   @Override

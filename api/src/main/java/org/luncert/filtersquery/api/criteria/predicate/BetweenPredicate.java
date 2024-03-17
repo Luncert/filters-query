@@ -1,5 +1,8 @@
 package org.luncert.filtersquery.api.criteria.predicate;
 
+import java.util.List;
+import org.luncert.filtersquery.api.criteria.Node;
+import org.luncert.filtersquery.api.criteria.Predicate;
 import org.luncert.filtersquery.api.criteria.Reference;
 import org.luncert.filtersquery.api.criteria.Value;
 
@@ -17,5 +20,10 @@ public class BetweenPredicate extends PredicateWithReference {
   @Override
   public String toString() {
     return ref.name() + " between [" + value1 + ", " + value2 + "]";
+  }
+
+  @Override
+  public List<Node> getChildren() {
+    return List.of(value1, value2);
   }
 }

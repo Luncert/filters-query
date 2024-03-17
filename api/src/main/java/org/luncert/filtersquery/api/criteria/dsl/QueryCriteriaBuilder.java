@@ -1,8 +1,10 @@
 package org.luncert.filtersquery.api.criteria.dsl;
 
+import java.util.List;
 import org.luncert.filtersquery.api.criteria.Predicate;
 import org.luncert.filtersquery.api.criteria.QueryCriteria;
 import org.luncert.filtersquery.api.criteria.Sort;
+import org.luncert.filtersquery.api.criteria.Sorts;
 import org.luncert.filtersquery.api.criteria.dsl.spec.IBuildSpec;
 import org.luncert.filtersquery.api.criteria.dsl.spec.IFilterBySpec;
 import org.luncert.filtersquery.api.criteria.dsl.spec.ILimitSpec;
@@ -59,6 +61,6 @@ public class QueryCriteriaBuilder implements IFilterBySpec,
 
   @Override
   public QueryCriteria build() {
-    return new QueryCriteria(predicate, sorts, offset, limit);
+    return new QueryCriteria(predicate, new Sorts(List.of(sorts)), offset, limit);
   }
 }

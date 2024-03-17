@@ -6,25 +6,19 @@ import lombok.AllArgsConstructor;
 public class QueryCriteria {
 
   private Predicate predicate;
-  private Sort[] sorts;
+  private Sorts sorts;
   private Integer offset;
   private Integer limit;
+
+  public void modifyPredicate(PredicateModifier modifier) {
+    predicate = modifier.modify(predicate);
+  }
 
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder("filter by ");
-    builder.append(predicate);
-
-    if (sorts != null && sorts.length > 0) {
-      builder.append(" sort by ");
-      var first = sorts[0];
-      builder.append(first.name()).append(' ').append(first.order().getIdenticalName());
-      for (int i = 1; i < sorts.length; i++) {
-        Sort sort = sorts[i];
-        builder.append(", ").append(sort.name()).append(' ')
-            .append(sort.order().getIdenticalName());
-      }
-    }
+    builder.append(predicate)
+        .append(sorts);
 
     if (offset != null && limit != null) {
       builder.append(" offset ").append(offset)
@@ -32,5 +26,17 @@ public class QueryCriteria {
     }
 
     return builder.toString();
+  }
+
+  @FunctionalInterface
+  public interface PredicateModifier {
+
+    Predicate modify(Predicate predicate);
+  }
+
+  @AllArgsConstructor
+  class PredicateWrapper {
+
+    private Predicate predicate;
   }
 }

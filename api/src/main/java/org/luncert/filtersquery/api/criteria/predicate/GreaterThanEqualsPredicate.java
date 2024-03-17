@@ -3,13 +3,10 @@ package org.luncert.filtersquery.api.criteria.predicate;
 import org.luncert.filtersquery.api.criteria.Reference;
 import org.luncert.filtersquery.api.criteria.Value;
 
-public class GreaterThanEqualsPredicate extends PredicateWithReference {
-
-  private final Value value;
+public class GreaterThanEqualsPredicate extends PredicateWithReferenceAndSingleValue {
 
   public GreaterThanEqualsPredicate(Reference ref, Value value) {
-    super(ref);
-    this.value = value;
+    super(ref, value);
   }
 
   @Override

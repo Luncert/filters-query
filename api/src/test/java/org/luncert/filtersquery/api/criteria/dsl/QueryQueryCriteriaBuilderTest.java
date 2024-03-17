@@ -27,8 +27,6 @@ public class QueryQueryCriteriaBuilderTest {
         .limit(10)
         .build();
     Assert.assertEquals(input, queryCriteria.toString());
-
-    FiltersQueryEngine.parse(input);
     Assert.assertEquals(input, FiltersQueryEngine.parse(input).toString());
   }
 
@@ -48,8 +46,6 @@ public class QueryQueryCriteriaBuilderTest {
         .build()
         .toString();
     Assert.assertEquals(input, criteria);
-
-    FiltersQueryEngine.parse(input);
     Assert.assertEquals(input, FiltersQueryEngine.parse(input).toString());
   }
 
@@ -67,8 +63,6 @@ public class QueryQueryCriteriaBuilderTest {
         .build()
         .toString();
     Assert.assertEquals(input, criteria);
-
-    FiltersQueryEngine.parse(input);
     Assert.assertEquals(input, FiltersQueryEngine.parse(input).toString());
   }
 }

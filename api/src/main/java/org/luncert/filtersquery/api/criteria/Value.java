@@ -1,6 +1,10 @@
 package org.luncert.filtersquery.api.criteria;
 
-public interface Value {
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+public interface Value extends Node {
 
   static LiteralValue literal(String value) {
     return new LiteralValue(value);
@@ -16,6 +20,11 @@ public interface Value {
     public String toString() {
       return "\"" + value + "\"";
     }
+
+    @Override
+    public List<Node> getChildren() {
+      return Collections.emptyList();
+    }
   }
 
   record NumberValue(Number value) implements Value {
@@ -23,6 +32,11 @@ public interface Value {
     @Override
     public String toString() {
       return value.toString();
+    }
+
+    @Override
+    public List<Node> getChildren() {
+      return Collections.emptyList();
     }
   }
 }

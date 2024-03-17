@@ -1,5 +1,7 @@
 package org.luncert.filtersquery.api.criteria.predicate;
 
+import java.util.List;
+import org.luncert.filtersquery.api.criteria.Node;
 import org.luncert.filtersquery.api.criteria.Predicate;
 
 public class AndPredicate implements Predicate {
@@ -19,5 +21,10 @@ public class AndPredicate implements Predicate {
       builder.append(" and ").append(predicate);
     }
     return builder.append(")").toString();
+  }
+
+  @Override
+  public List<Node> getChildren() {
+    return List.of(predicates);
   }
 }
