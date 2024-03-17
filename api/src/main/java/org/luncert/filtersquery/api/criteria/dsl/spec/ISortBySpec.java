@@ -1,4 +1,4 @@
-package org.luncert.filtersquery.api.criteria.spec;
+package org.luncert.filtersquery.api.criteria.dsl.spec;
 
 import org.luncert.filtersquery.api.criteria.Sort;
 

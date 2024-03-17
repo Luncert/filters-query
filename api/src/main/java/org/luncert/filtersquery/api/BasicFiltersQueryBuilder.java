@@ -15,7 +15,6 @@ public abstract class BasicFiltersQueryBuilder implements FiltersQueryBuilder {
     return FiltersQueryParser.VOCABULARY.getSymbolicName(tokenType);
   }
 
-
   protected String getLiteral(ParseTree value) {
     return isStringLiteral(value)
         ? Utils.unwrap(value.getText(), '"')
@@ -25,5 +24,10 @@ public abstract class BasicFiltersQueryBuilder implements FiltersQueryBuilder {
   protected boolean isStringLiteral(ParseTree value) {
     return getTokenName(((TerminalNode) value).getSymbol())
         .equals("INTERPRETED_STRING_LIT");
+  }
+
+  protected boolean isDecimalLiteral(ParseTree value) {
+    var symbol = getTokenName(((TerminalNode) value).getSymbol());
+    return symbol.equals("DECIMAL_LIT") || symbol.equals("ZERO");
   }
 }

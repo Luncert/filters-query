@@ -74,7 +74,7 @@ public class FiltersQueryBuilderPredicateImpl<E> extends BasicFiltersQueryBuilde
   }
 
   @Override
-  public void greaterEqualThan(String name, ParseTree value) {
+  public void greateerThanEqual(String name, ParseTree value) {
     predicates.add(getTypeMetadata(name).greaterEqualThan(name, getLiteral(value)));
   }
 
@@ -84,7 +84,7 @@ public class FiltersQueryBuilderPredicateImpl<E> extends BasicFiltersQueryBuilde
   }
 
   @Override
-  public void lessEqualThan(String name, ParseTree value) {
+  public void lessThanEqual(String name, ParseTree value) {
     predicates.add(getTypeMetadata(name).lessEqualThan(name, getLiteral(value)));
   }
 

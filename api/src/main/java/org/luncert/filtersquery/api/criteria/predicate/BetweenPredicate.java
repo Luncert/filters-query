@@ -16,6 +16,6 @@ public class BetweenPredicate extends PredicateWithReference {
 
   @Override
   public String toString() {
-    return ref.name() + " between (" + value1 + ", " + value2 + ")";
+    return ref.name() + " between [" + value1 + ", " + value2 + "]";
   }
 }

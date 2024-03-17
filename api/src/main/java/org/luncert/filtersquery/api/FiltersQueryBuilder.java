@@ -25,11 +25,11 @@ public interface FiltersQueryBuilder {
 
   void notEmpty(String name);
 
-  void greaterEqualThan(String name, ParseTree value);
+  void greateerThanEqual(String name, ParseTree value);
 
   void greaterThan(String name, ParseTree value);
 
-  void lessEqualThan(String name, ParseTree value);
+  void lessThanEqual(String name, ParseTree value);
 
   void lessThan(String name, ParseTree value);
 

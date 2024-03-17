@@ -1,4 +1,4 @@
-package org.luncert.filtersquery.api;
+package org.luncert.filtersquery.api.criteria.dsl;
 
 import static org.luncert.filtersquery.api.criteria.Reference.ref;
 import static org.luncert.filtersquery.api.criteria.Predicate.*;
@@ -7,13 +7,14 @@ import static org.luncert.filtersquery.api.criteria.Value.number;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.luncert.filtersquery.api.criteria.CriteriaBuilder;
+import org.luncert.filtersquery.api.FiltersQueryEngine;
 
-public class CriteriaBuilderTest {
+public class QueryQueryCriteriaBuilderTest {
 
   @Test
   public void test1() {
-    var criteria = CriteriaBuilder.create()
+    var input = "filter by ((a between [0, 100] and b like \"hi\") or c >= 10) sort by a asc, b desc offset 10 limit 10";
+    var queryCriteria = QueryCriteriaBuilder.create()
         .filterBy(or(
             and(
                 ref("a").between(number(0), number(100)),
@@ -25,12 +26,16 @@ public class CriteriaBuilderTest {
         .offset(10)
         .limit(10)
         .build();
-    Assert.assertEquals("filter by ((a between (0, 100) and b like \"hi\") or c >= 10) sort by a asc, b desc offset 10 limit 10", criteria);
+    Assert.assertEquals(input, queryCriteria.toString());
+
+    FiltersQueryEngine.parse(input);
+    Assert.assertEquals(input, FiltersQueryEngine.parse(input).toString());
   }
 
   @Test
   public void test2() {
-    var criteria = CriteriaBuilder.create()
+    var input = "filter by ((a < 100 and b startsWith \"hi\") or c <= 10) offset 10 limit 10";
+    var criteria = QueryCriteriaBuilder.create()
         .filterBy(or(
             and(
                 ref("a").lt(number(100)),
@@ -40,13 +45,18 @@ public class CriteriaBuilderTest {
         ))
         .offset(10)
         .limit(10)
-        .build();
-    Assert.assertEquals("filter by ((a < 100 and b startsWith \"hi\") or c <= 10) offset 10 limit 10", criteria);
+        .build()
+        .toString();
+    Assert.assertEquals(input, criteria);
+
+    FiltersQueryEngine.parse(input);
+    Assert.assertEquals(input, FiltersQueryEngine.parse(input).toString());
   }
 
   @Test
   public void test3() {
-    var criteria = CriteriaBuilder.create()
+    var input = "filter by ((a > 0 and b endsWith \"hi\") or c = empty)";
+    var criteria = QueryCriteriaBuilder.create()
         .filterBy(or(
             and(
                 ref("a").gt(number(0)),
@@ -54,7 +64,11 @@ public class CriteriaBuilderTest {
             ),
             ref("c").isEmpty()
         ))
-        .build();
-    Assert.assertEquals("filter by ((a > 0 and b endsWith \"hi\") or c = empty)", criteria);
+        .build()
+        .toString();
+    Assert.assertEquals(input, criteria);
+
+    FiltersQueryEngine.parse(input);
+    Assert.assertEquals(input, FiltersQueryEngine.parse(input).toString());
   }
 }

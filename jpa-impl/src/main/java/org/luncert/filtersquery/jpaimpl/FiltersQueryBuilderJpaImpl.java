@@ -108,7 +108,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
     predicates.add(predicate);
   }
 
-  public void greaterEqualThan(String name, ParseTree value) {
+  public void greateerThanEqual(String name, ParseTree value) {
     predicates.add(createPredicate(name, value, criteriaBuilder::greaterThanOrEqualTo));
   }
 
@@ -117,7 +117,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
     predicates.add(createPredicate(name, value, criteriaBuilder::greaterThan));
   }
 
-  public void lessEqualThan(
+  public void lessThanEqual(
       String name, ParseTree value) {
     predicates.add(createPredicate(name, value, criteriaBuilder::lessThanOrEqualTo));
   }
