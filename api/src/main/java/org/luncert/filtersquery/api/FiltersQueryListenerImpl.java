@@ -82,7 +82,7 @@ public class FiltersQueryListenerImpl extends FiltersQueryBaseListener {
   @Override
   public void enterGreaterEqualThanCriteria(
       FiltersQueryParser.GreaterEqualThanCriteriaContext ctx) {
-    queryBuilder.greateerThanEqual(ctx.propertyName().getText(), ctx.propertyValue().getChild(0));
+    queryBuilder.greaterThanEqual(ctx.propertyName().getText(), ctx.propertyValue().getChild(0));
   }
 
   @Override

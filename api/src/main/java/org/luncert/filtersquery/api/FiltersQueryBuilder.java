@@ -25,7 +25,7 @@ public interface FiltersQueryBuilder {
 
   void notEmpty(String name);
 
-  void greateerThanEqual(String name, ParseTree value);
+  void greaterThanEqual(String name, ParseTree value);
 
   void greaterThan(String name, ParseTree value);
 

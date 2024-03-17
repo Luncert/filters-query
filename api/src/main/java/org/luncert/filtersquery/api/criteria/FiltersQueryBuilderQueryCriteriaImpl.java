@@ -79,7 +79,7 @@ public class FiltersQueryBuilderQueryCriteriaImpl extends BasicFiltersQueryBuild
   }
 
   @Override
-  public void greateerThanEqual(String name, ParseTree value) {
+  public void greaterThanEqual(String name, ParseTree value) {
     predicates.add(ref(name).gte(parseValue(value)));
   }
 
