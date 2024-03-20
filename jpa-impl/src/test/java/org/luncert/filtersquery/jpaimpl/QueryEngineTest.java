@@ -21,14 +21,14 @@ public class QueryEngineTest {
     searchEngine.search("filter by asd");
   }
 
-  @Test(expected = FiltersQuerySyntaxException.class)
+  @Test(expected = FiltersQueryException.class)
   public void limitMissingOnNonPageableRequest() {
-    searchEngine.search("filter by a=1 offset 3");
+    searchEngine.search("filter by id=1 offset 3");
   }
 
-  @Test(expected = FiltersQuerySyntaxException.class)
+  @Test(expected = FiltersQueryException.class)
   public void offsetMissingOnNonPageableRequest() {
-    searchEngine.search("filter by a=1 limit 3");
+    searchEngine.search("filter by id=1 limit 3");
   }
 
   @Test(expected = FiltersQueryException.class)
@@ -36,14 +36,14 @@ public class QueryEngineTest {
     searchEngine.search("filter by id=1 offset 2 limit 3");
   }
 
-  @Test(expected = FiltersQuerySyntaxException.class)
+  @Test(expected = FiltersQueryException.class)
   public void limitMissingOnPageableRequest() {
-    searchEngine.searchPages("filter by a=1 offset 3");
+    searchEngine.searchPages("filter by id=1 offset 3");
   }
 
-  @Test(expected = FiltersQuerySyntaxException.class)
+  @Test(expected = FiltersQueryException.class)
   public void offsetMissingOnPageableRequest() {
-    searchEngine.searchPages("filter by a=1 limit 3");
+    searchEngine.searchPages("filter by id=1 limit 3");
   }
 
   @Test(expected = FiltersQueryException.class)
