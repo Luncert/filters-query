@@ -61,3 +61,6 @@ case_externalReference_endsWith:
 case_paren:
   criteria: 'filter   by (externalReference endsWith "03") and id > 5'
   expected: [6]
+case_in:
+  criteria: 'filter by (id in ["1", "2", "3"])'
+  expected: [1, 2, 3]

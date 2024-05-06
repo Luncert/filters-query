@@ -1,5 +1,6 @@
 package org.luncert.filtersquery.predicateimpl.builder;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 public interface TypedPredicateBuilder<T> {
@@ -11,6 +12,8 @@ public interface TypedPredicateBuilder<T> {
   Predicate<T> empty(String name);
 
   Predicate<T> notEmpty(String name);
+
+  Predicate<T> in(String name, List<String> literalValues);
 
   Predicate<T> greaterEqualThan(String name, String literalValue);
 

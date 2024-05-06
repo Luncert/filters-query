@@ -1,5 +1,6 @@
 package org.luncert.filtersquery.luceneimpl.builder;
 
+import java.util.List;
 import org.apache.lucene.search.Query;
 
 public abstract class BasicTypedQueryBuilder<T> implements TypedQueryBuilder<T> {
@@ -11,6 +12,11 @@ public abstract class BasicTypedQueryBuilder<T> implements TypedQueryBuilder<T> 
 
   @Override
   public Query notEmpty(String name) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Query in(String name, List<String> literalValues) {
     throw new UnsupportedOperationException();
   }
 

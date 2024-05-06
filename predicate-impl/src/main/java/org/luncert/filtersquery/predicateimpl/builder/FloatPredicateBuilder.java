@@ -1,5 +1,6 @@
 package org.luncert.filtersquery.predicateimpl.builder;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 public class FloatPredicateBuilder extends BasicTypedPredicateBuilder<Object> {
@@ -12,6 +13,11 @@ public class FloatPredicateBuilder extends BasicTypedPredicateBuilder<Object> {
   @Override
   public Predicate<Object> notEqual(String name, String literalValue) {
     return obj -> compare(obj, name, Float.parseFloat(literalValue)) != 0;
+  }
+
+  @Override
+  public Predicate<Object> in(String name, List<String> literalValues) {
+    return obj -> literalValues.stream().anyMatch(v -> compare(obj, name, Float.parseFloat(v)) == 0);
   }
 
   @Override

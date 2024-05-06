@@ -55,7 +55,8 @@ public class QueryEngineParameterizedTest {
         "case_id_between",
         "case_externalReference_startsWith",
         "case_externalReference_endsWith",
-        "case_paren"
+        "case_paren",
+        "case_in"
     );
   }
 }

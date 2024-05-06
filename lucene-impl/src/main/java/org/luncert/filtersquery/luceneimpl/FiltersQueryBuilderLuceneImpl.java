@@ -74,6 +74,11 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
   }
 
   @Override
+  public void in(String name, List<ParseTree> values) {
+    queries.add(getTypeMetadata(name).in(name, values.stream().map(this::getLiteral).toList()));
+  }
+
+  @Override
   public void greaterThanEqual(String name, ParseTree value) {
     queries.add(getTypeMetadata(name).greaterEqualThan(name, getLiteral(value)));
   }

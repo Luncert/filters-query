@@ -74,6 +74,12 @@ public class FiltersQueryBuilderPredicateImpl<E> extends BasicFiltersQueryBuilde
   }
 
   @Override
+  public void in(String name, List<ParseTree> values) {
+    predicates.add(getTypeMetadata(name)
+        .in(name, values.stream().map(this::getLiteral).toList()));
+  }
+
+  @Override
   public void greaterThanEqual(String name, ParseTree value) {
     predicates.add(getTypeMetadata(name).greaterEqualThan(name, getLiteral(value)));
   }
