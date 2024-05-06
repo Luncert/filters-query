@@ -108,6 +108,12 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
     predicates.add(predicate);
   }
 
+  @Override
+  public void in(String name, List<ParseTree> values) {
+    Path<? extends Comparable<? super Object>> path = entity.get(name);
+    predicates.add(path.in(values.stream().map(this::extractValueFromParseTree).toList()));
+  }
+
   public void greaterThanEqual(String name, ParseTree value) {
     predicates.add(createPredicate(name, value, criteriaBuilder::greaterThanOrEqualTo));
   }
@@ -253,17 +259,21 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   @SuppressWarnings("unchecked")
   private <T extends Comparable<? super T>> ParameterExpression<T> createParameter(
       String name, ParseTree value, Function<String, String> valueModifier) {
-    boolean interpretedStringLit = getTokenName(((TerminalNode) value).getSymbol())
-        .equals("INTERPRETED_STRING_LIT");
-    String literal = interpretedStringLit
-        ? Utils.unwrap(value.getText(), '"')
-        : value.getText();
+    String literal = extractValueFromParseTree(value);
 
     Class<Object> type = entity.get(name).getModel().getBindableJavaType();
     ParameterExpression<?> parameter = criteriaBuilder.parameter(type);
     parameters.put(parameter, valueModifier.apply(literal));
 
     return (ParameterExpression<T>) parameter;
+  }
+
+  private String extractValueFromParseTree(ParseTree value) {
+    boolean interpretedStringLit = getTokenName(((TerminalNode) value).getSymbol())
+        .equals("INTERPRETED_STRING_LIT");
+    return interpretedStringLit
+        ? Utils.unwrap(value.getText(), '"')
+        : value.getText();
   }
 
   private boolean isLiteral(String name) {

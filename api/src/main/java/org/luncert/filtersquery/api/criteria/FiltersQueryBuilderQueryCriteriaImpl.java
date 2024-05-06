@@ -7,7 +7,6 @@ import static org.luncert.filtersquery.api.criteria.Value.number;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,8 +16,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.luncert.filtersquery.api.BasicFiltersQueryBuilder;
 import org.luncert.filtersquery.api.FiltersQueryBuilder;
 import org.luncert.filtersquery.api.Utils;
-import org.luncert.filtersquery.api.criteria.predicate.AndPredicate;
-import org.luncert.filtersquery.api.exception.IllegalParameterException;
 
 /**
  * Parse criteria to FiltersQuery object.
@@ -76,6 +73,11 @@ public class FiltersQueryBuilderQueryCriteriaImpl extends BasicFiltersQueryBuild
   @Override
   public void notEmpty(String name) {
     predicates.add(ref(name).notEmpty());
+  }
+
+  @Override
+  public void in(String name, List<ParseTree> values) {
+    predicates.add(ref(name).in(values.stream().map(this::parseValue).toArray(Value[]::new)));
   }
 
   @Override

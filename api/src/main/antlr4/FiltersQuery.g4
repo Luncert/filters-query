@@ -38,6 +38,7 @@ filter:
     | greaterEqualThanCriteria
     | lessThanCriteria
     | lessEqualThanCriteria
+    | inCriteria
     ;
 
 boolOperator:
@@ -71,6 +72,8 @@ lessThanCriteria: propertyName WS? LESS WS? propertyValue;
 
 lessEqualThanCriteria: propertyName WS? LESS_OR_EQUALS WS? propertyValue;
 
+inCriteria: propertyName WS? IN WS? propertyValueList;
+
 sortBy:
     WS SORT WS BY WS sorts
     ;
@@ -93,6 +96,10 @@ limit:
 
 propertyName:
     IDENTIFIER
+    ;
+
+propertyValueList:
+    L_BRACKET WS? propertyValue (WS? COMMA WS? propertyValue)* WS? R_BRACKET
     ;
 
 propertyValue:

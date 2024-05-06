@@ -89,7 +89,8 @@ public class QueryEngineParameterizedTest {
         "case_externalReference_startsWith",
         "case_externalReference_endsWith",
         "case_createdAt_like",
-        "case_paren"
+        "case_paren",
+        "case_in"
     );
   }
 }

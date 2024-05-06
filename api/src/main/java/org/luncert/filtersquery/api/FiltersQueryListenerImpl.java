@@ -96,6 +96,15 @@ public class FiltersQueryListenerImpl extends FiltersQueryBaseListener {
   }
 
   @Override
+  public void enterInCriteria(FiltersQueryParser.InCriteriaContext ctx) {
+    var values = ctx.propertyValueList().children.stream()
+        .filter(v -> !(v instanceof TerminalNode))
+        .map(v -> v.getChild(0))
+        .toList();
+    queryBuilder.in(ctx.propertyName().getText(), values);
+  }
+
+  @Override
   public void enterOrder(FiltersQueryParser.OrderContext ctx) {
     queryBuilder.order(ctx.propertyName().getText(), ctx.getChildCount() > 1
         ? ((TerminalNode) ctx.getChild(ctx.getChildCount() - 1)).getSymbol() : null);

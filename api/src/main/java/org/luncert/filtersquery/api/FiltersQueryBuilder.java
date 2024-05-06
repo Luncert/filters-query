@@ -1,5 +1,6 @@
 package org.luncert.filtersquery.api;
 
+import java.util.List;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -24,6 +25,8 @@ public interface FiltersQueryBuilder {
   void empty(String name);
 
   void notEmpty(String name);
+
+  void in(String name, List<ParseTree> values);
 
   void greaterThanEqual(String name, ParseTree value);
 

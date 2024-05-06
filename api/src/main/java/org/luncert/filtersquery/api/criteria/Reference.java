@@ -5,6 +5,7 @@ import org.luncert.filtersquery.api.criteria.predicate.EndsWithPredicate;
 import org.luncert.filtersquery.api.criteria.predicate.EqualsPredicate;
 import org.luncert.filtersquery.api.criteria.predicate.GreaterThanEqualsPredicate;
 import org.luncert.filtersquery.api.criteria.predicate.GreaterThanPredicate;
+import org.luncert.filtersquery.api.criteria.predicate.InPredicate;
 import org.luncert.filtersquery.api.criteria.predicate.IsEmptyPredicate;
 import org.luncert.filtersquery.api.criteria.predicate.LessThanEqualsPredicate;
 import org.luncert.filtersquery.api.criteria.predicate.LessThanPredicate;
@@ -70,6 +71,10 @@ public record Reference(String name) {
 
   public Predicate lte(Value value) {
     return new LessThanEqualsPredicate(this, value);
+  }
+
+  public Predicate in(Value... values) {
+    return new InPredicate(this, values);
   }
 
   public Sort asc() {
