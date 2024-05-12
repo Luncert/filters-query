@@ -28,25 +28,11 @@ public abstract class JpaFiltersQueryEngine<E> extends FiltersQueryEngine {
   }
 
   public Page<E> searchPages(String criteria) {
-    return search(criteria, null,
-        result -> {
-          if (result.getLimit() == null || result.getOffset() == null) {
-            throw new FiltersQueryException(
-                "limit and offset parameters missing on pageable request");
-          }
-
-          List<E> resultList = result.getQuery().getResultList().stream()
-              .map(tuple -> tuple.get(0, entityType)).toList();
-          long count = result.getCountQuery().getResultList().get(0).get(0, Long.class);
-
-          Pageable pageable = PageRequest.of(result.getOffset() / result.getLimit(),
-              result.getLimit());
-          return new PageImpl<>(resultList, pageable, count);
-        });
+    return searchPages(criteria, (cq, cb, entity) -> {});
   }
 
-  public Page<E> searchPages(String filterBy, Pageable pageable) {
-    return search(filterBy,
+  public Page<E> searchPages(String criteria, Pageable pageable) {
+    return search(criteria,
         (cq, cb, entity) ->
             cq.orderBy(pageable.getSort().stream()
                 .map(order ->
@@ -71,6 +57,25 @@ public abstract class JpaFiltersQueryEngine<E> extends FiltersQueryEngine {
         });
   }
 
+  protected Page<E> searchPages(String criteria,
+                                CriteriaQueryBuilder<E> criteriaQueryBuilder) {
+    return search(criteria, criteriaQueryBuilder,
+        result -> {
+          if (result.getLimit() == null || result.getOffset() == null) {
+            throw new FiltersQueryException(
+                "limit and offset parameters missing on pageable request");
+          }
+
+          List<E> resultList = result.getQuery().getResultList().stream()
+              .map(tuple -> tuple.get(0, entityType)).toList();
+          long count = result.getCountQuery().getResultList().get(0).get(0, Long.class);
+
+          Pageable pageable = PageRequest.of(result.getOffset() / result.getLimit(),
+              result.getLimit());
+          return new PageImpl<>(resultList, pageable, count);
+        });
+  }
+
   public List<E> search(String criteria) {
     return search(criteria, ((cq, cb, entity) -> cq.multiselect(entity)),
         result -> {
@@ -84,9 +89,9 @@ public abstract class JpaFiltersQueryEngine<E> extends FiltersQueryEngine {
         });
   }
 
-  private <R> R search(String criteria,
-                       CriteriaQueryBuilder<E> criteriaQueryBuilder,
-                       ResultMapper<R> resultMapper) {
+  protected <R> R search(String criteria,
+                         CriteriaQueryBuilder<E> criteriaQueryBuilder,
+                         ResultMapper<R> resultMapper) {
     CriteriaBuilder cb = em.getCriteriaBuilder();
     CriteriaQuery<Tuple> cq = cb.createTupleQuery();
     Root<E> entity = cq.from(entityType);
@@ -99,13 +104,13 @@ public abstract class JpaFiltersQueryEngine<E> extends FiltersQueryEngine {
   }
 
   @FunctionalInterface
-  private interface CriteriaQueryBuilder<E> {
+  protected interface CriteriaQueryBuilder<E> {
 
     void process(CriteriaQuery<Tuple> cq, CriteriaBuilder cb, Root<E> entity);
   }
 
   @FunctionalInterface
-  private interface ResultMapper<R> {
+  protected interface ResultMapper<R> {
 
     R map(FiltersQueryBuilderJpaImpl.ResultImpl result);
   }
