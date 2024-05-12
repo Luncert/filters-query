@@ -1,10 +1,11 @@
 package org.luncert.filtersquery.api.criteria;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public interface Value extends Node {
+
+  public static final Value NULL = new NullValue();
 
   static LiteralValue literal(String value) {
     return new LiteralValue(value);
@@ -32,6 +33,19 @@ public interface Value extends Node {
     @Override
     public String toString() {
       return value.toString();
+    }
+
+    @Override
+    public List<Node> getChildren() {
+      return Collections.emptyList();
+    }
+  }
+
+  class NullValue implements Value {
+
+    @Override
+    public String toString() {
+      return "null";
     }
 
     @Override
