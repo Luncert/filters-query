@@ -64,3 +64,12 @@ case_paren:
 case_in:
   criteria: 'filter by (id in ["1", "2", "3"])'
   expected: [1, 2, 3]
+case_subCategoryId_equal_null:
+  criteria: 'filter by (subCategoryId = null)'
+  expected: [6]
+case_subCategoryId_not_null:
+  criteria: 'filter by (subCategoryId != null)'
+  expected: [-1, 1, 2, 3, 4, 5, 7, 8, 9]
+case_subCategoryId_in_null:
+  criteria: 'filter by (subCategoryId in [null])'
+  expected: [6]

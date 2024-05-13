@@ -60,9 +60,9 @@ endsWithCriteria: propertyName WS ENDSWITH WS stringPropertyValue;
 
 likeCriteria: propertyName WS LIKE WS stringPropertyValue;
 
-equalCriteria: propertyName WS? EQUALS WS? propertyValue;
+equalCriteria: propertyName WS? EQUALS WS? propertyValueWithNull;
 
-notEqualCriteria: propertyName WS? NOT_EQUALS WS? propertyValue;
+notEqualCriteria: propertyName WS? NOT_EQUALS WS? propertyValueWithNull;
 
 greaterThanCriteria: propertyName WS? GREATER WS? propertyValue;
 
@@ -99,7 +99,7 @@ propertyName:
     ;
 
 propertyValueList:
-    L_BRACKET WS? propertyValue (WS? COMMA WS? propertyValue)* WS? R_BRACKET
+    L_BRACKET WS? propertyValueWithNull (WS? COMMA WS? propertyValueWithNull)* WS? R_BRACKET
     ;
 
 propertyValue:
@@ -107,6 +107,14 @@ propertyValue:
     | DECIMAL_LIT
     | FLOAT_LIT
     | INTERPRETED_STRING_LIT
+    ;
+
+propertyValueWithNull:
+    ZERO
+    | DECIMAL_LIT
+    | FLOAT_LIT
+    | INTERPRETED_STRING_LIT
+    | NULL
     ;
 
 decimal:

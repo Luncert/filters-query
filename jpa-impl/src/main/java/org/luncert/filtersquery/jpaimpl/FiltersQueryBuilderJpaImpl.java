@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
@@ -61,6 +62,12 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   }
 
   public void equal(String name, ParseTree value) {
+    if (isNull(value)) {
+      Path<? extends Comparable<? super Object>> path = entity.get(name);
+      predicates.add(criteriaBuilder.isNull(path));
+      return;
+    }
+
     predicates.add(createPredicate(name, value, criteriaBuilder::equal));
   }
 
@@ -68,6 +75,12 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
    * Assert column not equal to specified value, not null and not empty.
    */
   public void notEqual(String name, ParseTree value) {
+    if (isNull(value)) {
+      Path<? extends Comparable<? super Object>> path = entity.get(name);
+      predicates.add(criteriaBuilder.isNotNull(path));
+      return;
+    }
+
     Predicate predicate = createPredicate(name, value, (path, parameter) -> {
       if (isLiteral(name)) {
         return criteriaBuilder.or(
@@ -111,7 +124,22 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   @Override
   public void in(String name, List<ParseTree> values) {
     Path<? extends Comparable<? super Object>> path = entity.get(name);
-    predicates.add(path.in(values.stream().map(this::extractValueFromParseTree).toList()));
+
+    AtomicBoolean containsNull = new AtomicBoolean(false);
+    var parsedValues = values.stream().filter(v -> {
+      if (isNull(v)) {
+        containsNull.set(true);
+        return false;
+      }
+      return true;
+    }).map(this::extractValueFromParseTree).toList();
+    var predicate = path.in(parsedValues);
+
+    if (containsNull.get()) {
+      predicates.add(criteriaBuilder.or(predicate, criteriaBuilder.isNull(path)));
+    } else {
+      predicates.add(predicate);
+    }
   }
 
   public void greaterThanEqual(String name, ParseTree value) {
@@ -246,6 +274,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
       BiFunction<Path<? extends Comparable<? super Object>>,
           ParameterExpression<? extends Comparable<? super Object>>, T> action) {
     Path<? extends Comparable<? super Object>> path = entity.get(name);
+
     ParameterExpression<? extends Comparable<? super Object>> parameter =
         createParameter(name, value);
     return action.apply(path, parameter);
@@ -274,6 +303,11 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
     return interpretedStringLit
         ? Utils.unwrap(value.getText(), '"')
         : value.getText();
+  }
+
+  private boolean isNull(ParseTree value) {
+    var symbolName = getTokenName(((TerminalNode) value).getSymbol());
+    return symbolName.equals("NULL");
   }
 
   private boolean isLiteral(String name) {

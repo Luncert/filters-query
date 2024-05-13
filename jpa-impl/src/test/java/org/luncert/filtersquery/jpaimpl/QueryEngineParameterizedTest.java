@@ -90,7 +90,10 @@ public class QueryEngineParameterizedTest {
         "case_externalReference_endsWith",
         "case_createdAt_like",
         "case_paren",
-        "case_in"
+        "case_in",
+        "case_subCategoryId_equal_null",
+        "case_subCategoryId_not_null",
+        "case_subCategoryId_in_null"
     );
   }
 }

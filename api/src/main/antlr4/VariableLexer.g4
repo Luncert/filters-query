@@ -1,5 +1,7 @@
 lexer grammar VariableLexer;
 
+NULL                   : 'null';
+
 // Punctuation
 
 L_PAREN                : '(';
