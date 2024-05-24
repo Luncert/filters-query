@@ -73,3 +73,12 @@ case_subCategoryId_not_null:
 case_subCategoryId_in_null:
   criteria: 'filter by (subCategoryId in [null])'
   expected: [6]
+case_bool_equal_true:
+  criteria: 'filter by (bool = true)'
+  expected: [7]
+case_bool_equal_false:
+  criteria: 'filter by (bool = false)'
+  expected: [6]
+case_bool_not_null:
+  criteria: 'filter by (bool != null)'
+  expected: [6, 7]

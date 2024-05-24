@@ -93,7 +93,10 @@ public class QueryEngineParameterizedTest {
         "case_in",
         "case_subCategoryId_equal_null",
         "case_subCategoryId_not_null",
-        "case_subCategoryId_in_null"
+        "case_subCategoryId_in_null",
+        "case_bool_equal_true",
+        "case_bool_equal_false",
+        "case_bool_not_null"
     );
   }
 }

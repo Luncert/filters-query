@@ -65,12 +65,12 @@ public class FiltersQueryListenerImpl extends FiltersQueryBaseListener {
 
   @Override
   public void enterEqualCriteria(FiltersQueryParser.EqualCriteriaContext ctx) {
-    queryBuilder.equal(ctx.propertyName().getText(), ctx.propertyValueWithNull().getChild(0));
+    queryBuilder.equal(ctx.propertyName().getText(), ctx.propertyValueWithBoolAndNull().getChild(0));
   }
 
   @Override
   public void enterNotEqualCriteria(FiltersQueryParser.NotEqualCriteriaContext ctx) {
-    queryBuilder.notEqual(ctx.propertyName().getText(), ctx.propertyValueWithNull().getChild(0));
+    queryBuilder.notEqual(ctx.propertyName().getText(), ctx.propertyValueWithBoolAndNull().getChild(0));
   }
 
   @Override

@@ -43,6 +43,7 @@
     "externalReference": "ext03",
     "severity": "Warning",
     "categoryId": "C",
+    "bool": false,
     "createdAt": "1683018600000"
   },
   {
@@ -51,6 +52,7 @@
     "severity": "Success",
     "categoryId": "C",
     "subCategoryId": "SC1",
+    "bool": true,
     "createdAt": "1682932200000"
   },
   {

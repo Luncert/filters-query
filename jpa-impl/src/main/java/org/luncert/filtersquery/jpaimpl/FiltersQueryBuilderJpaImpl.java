@@ -44,7 +44,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   private List<Predicate> predicates = new ArrayList<>();
   private List<Integer> operations = new LinkedList<>();
   private final List<Order> orders = new ArrayList<>();
-  private final Map<Parameter<?>, String> parameters = new HashMap<>();
+  private final Map<Parameter<?>, Object> parameters = new HashMap<>();
   private final ResultImpl result = new ResultImpl();
 
   public void enterParentheses() {
@@ -223,7 +223,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
     criteriaQuery.multiselect(entity).orderBy(orders);
     result.query = em.createQuery(criteriaQuery);
 
-    for (Map.Entry<Parameter<?>, String> entry : parameters.entrySet()) {
+    for (Map.Entry<Parameter<?>, Object> entry : parameters.entrySet()) {
       Parameter<Object> parameter = (Parameter<Object>) entry.getKey();
       result.query.setParameter(parameter, entry.getValue());
       result.countQuery.setParameter(parameter, entry.getValue());
@@ -292,7 +292,12 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
 
     Class<Object> type = entity.get(name).getModel().getBindableJavaType();
     ParameterExpression<?> parameter = criteriaBuilder.parameter(type);
-    parameters.put(parameter, valueModifier.apply(literal));
+
+    if (Boolean.class.isAssignableFrom(type)) {
+      parameters.put(parameter, Boolean.valueOf(literal));
+    } else {
+      parameters.put(parameter, valueModifier.apply(literal));
+    }
 
     return (ParameterExpression<T>) parameter;
   }

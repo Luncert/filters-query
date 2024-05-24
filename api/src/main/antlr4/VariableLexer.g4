@@ -14,6 +14,8 @@ COMMA                  : ',';
 
 LOGICAL_OR             : 'or';
 LOGICAL_AND            : 'and';
+TRUE                   : 'true';
+FALSE                  : 'false';
 
 // Key words
 

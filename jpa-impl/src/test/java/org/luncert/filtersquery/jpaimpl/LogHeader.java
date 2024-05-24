@@ -30,6 +30,8 @@ public class LogHeader implements Serializable {
 
   private String subCategoryId;
 
+  private Boolean bool;
+
   private long createdAt;
 
 }
