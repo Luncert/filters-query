@@ -8,6 +8,10 @@ import org.luncert.filtersquery.api.criteria.predicate.OrPredicate;
 
 public interface Predicate extends Node {
 
+  default boolean isBoolExpression() {
+    return false;
+  }
+
   static Predicate and(Predicate... predicates) {
     var list = Arrays.stream(predicates).filter(Objects::nonNull).toList();
     if (list.isEmpty()) {

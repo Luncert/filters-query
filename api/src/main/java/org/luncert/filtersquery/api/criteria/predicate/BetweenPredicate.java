@@ -1,15 +1,13 @@
 package org.luncert.filtersquery.api.criteria.predicate;
 
-import java.util.List;
 import org.luncert.filtersquery.api.criteria.Node;
-import org.luncert.filtersquery.api.criteria.Predicate;
 import org.luncert.filtersquery.api.criteria.Reference;
 import org.luncert.filtersquery.api.criteria.Value;
 
 public class BetweenPredicate extends PredicateWithReference {
 
-  private final Value value1;
-  private final Value value2;
+  private Value value1;
+  private Value value2;
 
   public BetweenPredicate(Reference ref, Value value1, Value value2) {
     super(ref);
@@ -23,7 +21,35 @@ public class BetweenPredicate extends PredicateWithReference {
   }
 
   @Override
-  public List<Node> getChildren() {
-    return List.of(value1, value2);
+  public int getChildenSize() {
+    return 2;
+  }
+
+  @Override
+  public Node getChild(int idx) {
+    checkIndex(idx);
+    return idx == 0 ? value1 : value2;
+  }
+
+  @Override
+  public Node replaceChild(int idx, Node newChild) {
+    checkIndex(idx);
+    if (!(newChild instanceof Value)) {
+      throw new IllegalArgumentException("child must be instance of predicate");
+    }
+    Value tmp;
+    if (idx == 0) {
+      tmp = value1;
+      value1 = (Value) newChild;
+    } else {
+      tmp = value2;
+      value2 = (Value) newChild;
+    }
+    return tmp;
+  }
+
+  @Override
+  public Node removeChild(int idx) {
+    throw new UnsupportedOperationException();
   }
 }

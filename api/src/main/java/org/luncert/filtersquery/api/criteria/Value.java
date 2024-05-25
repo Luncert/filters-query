@@ -1,56 +1,108 @@
 package org.luncert.filtersquery.api.criteria;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Objects;
 
-public interface Value extends Node {
+public abstract class Value implements Node {
 
-  public static final Value NULL = new NullValue();
+  public static final Value NULL = new Value() {
+    @Override
+    public String toString() {
+      return "null";
+    }
+  };
 
-  static LiteralValue literal(String value) {
+  public static LiteralValue literal(String value) {
     return new LiteralValue(value);
   }
 
-  static NumberValue number(Number value) {
+  public static NumberValue number(Number value) {
     return new NumberValue(value);
   }
 
-  record LiteralValue(String value) implements Value {
+  @Override
+  public int getChildenSize() {
+    return 0;
+  }
+
+  @Override
+  public Node getChild(int idx) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void insertChild(int idx, Node newChild) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Node replaceChild(int idx, Node newChild) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Node removeChild(int idx) {
+    throw new UnsupportedOperationException();
+  }
+
+  public static final class LiteralValue extends Value {
+    private final String value;
+
+    LiteralValue(String value) {
+      this.value = value;
+    }
 
     @Override
     public String toString() {
       return "\"" + value + "\"";
     }
 
-    @Override
-    public List<Node> getChildren() {
-      return Collections.emptyList();
+    public String value() {
+      return value;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj == this) return true;
+      if (obj == null || obj.getClass() != this.getClass()) return false;
+      var that = (LiteralValue) obj;
+      return Objects.equals(this.value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(value);
+    }
+
   }
 
-  record NumberValue(Number value) implements Value {
+  public static final class NumberValue extends Value {
+
+    private final Number value;
+
+    NumberValue(Number value) {
+      this.value = value;
+    }
 
     @Override
     public String toString() {
       return value.toString();
     }
 
-    @Override
-    public List<Node> getChildren() {
-      return Collections.emptyList();
-    }
-  }
-
-  class NullValue implements Value {
-
-    @Override
-    public String toString() {
-      return "null";
+    public Number value() {
+      return value;
     }
 
     @Override
-    public List<Node> getChildren() {
-      return Collections.emptyList();
+    public boolean equals(Object obj) {
+      if (obj == this) return true;
+      if (obj == null || obj.getClass() != this.getClass()) return false;
+      var that = (NumberValue) obj;
+      return Objects.equals(this.value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(value);
     }
   }
 }

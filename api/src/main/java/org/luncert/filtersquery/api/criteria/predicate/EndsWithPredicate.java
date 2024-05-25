@@ -1,7 +1,5 @@
 package org.luncert.filtersquery.api.criteria.predicate;
 
-import java.util.List;
-import org.luncert.filtersquery.api.criteria.Node;
 import org.luncert.filtersquery.api.criteria.Reference;
 import org.luncert.filtersquery.api.criteria.Value;
 

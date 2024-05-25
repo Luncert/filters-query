@@ -1,11 +1,11 @@
 package org.luncert.filtersquery.api.criteria.predicate;
 
-import java.util.Collections;
-import java.util.List;
+import lombok.Getter;
 import org.luncert.filtersquery.api.criteria.Node;
 import org.luncert.filtersquery.api.criteria.Predicate;
 import org.luncert.filtersquery.api.criteria.Reference;
 
+@Getter
 public abstract class PredicateWithReference implements Predicate {
 
   protected final Reference ref;
@@ -15,7 +15,18 @@ public abstract class PredicateWithReference implements Predicate {
   }
 
   @Override
-  public List<Node> getChildren() {
-    return Collections.emptyList();
+  public void insertChild(int idx, Node newChild) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Node removeChild(int idx) {
+    throw new UnsupportedOperationException();
+  }
+
+  protected void checkIndex(int idx) {
+    if (idx < 0 || idx >= getChildenSize()) {
+      throw new IndexOutOfBoundsException(idx);
+    }
   }
 }
