@@ -39,14 +39,18 @@ public abstract class BoolPredicate implements Predicate {
 
   @Override
   public void insertChild(int idx, Node newChild) {
-    checkIndex(idx);
+    if (idx < 0 || idx > getChildenSize()) {
+      throw new IndexOutOfBoundsException(idx);
+    }
     if (!(newChild instanceof Predicate)) {
       throw new IllegalArgumentException("child must be instance of predicate");
     }
 
     var newArr = new Predicate[predicates.length + 1];
     System.arraycopy(predicates, 0, newArr, 0, idx);
-    System.arraycopy(predicates, idx + 1, newArr, idx, predicates.length - idx);
+    if (idx < getChildenSize()) {
+      System.arraycopy(predicates, idx, newArr, idx + 1, predicates.length - idx);
+    }
     newArr[idx] = (Predicate) newChild;
     predicates = newArr;
   }

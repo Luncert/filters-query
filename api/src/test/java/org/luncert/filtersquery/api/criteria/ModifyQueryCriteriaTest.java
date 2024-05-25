@@ -20,12 +20,14 @@ public class ModifyQueryCriteriaTest {
 
     queryCriteria.modifyPredicate(p -> {
       var children = new ArrayList<Node>();
-      for (int i = 0, limit = p.getChildenSize(); i < limit; i++) {
+      int i = 0;
+      while (i < p.getChildenSize()) {
         var child = p.getChild(i);
         if (child instanceof AndPredicate) {
-          p.insertChild(child.getChildenSize() - 1, ref("x").gt(number(10)));
+          child.insertChild(child.getChildenSize(), ref("x").gt(number(10)));
         }
         children.add(child);
+        i++;
       }
       return Predicate.or(children.toArray(new Predicate[0]));
     });
