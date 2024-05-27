@@ -14,7 +14,7 @@ public abstract class PredicateWithReferenceAndSingleValue extends PredicateWith
   }
 
   @Override
-  public int getChildenSize() {
+  public int getChildrenSize() {
     return 1;
   }
 

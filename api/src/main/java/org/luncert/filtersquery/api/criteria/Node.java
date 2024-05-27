@@ -1,10 +1,16 @@
 package org.luncert.filtersquery.api.criteria;
 
-import java.util.List;
-
 public interface Node {
 
-  int getChildenSize();
+  int getChildrenSize();
+
+  default Node[] getChildren() {
+    var arr = new Node[getChildrenSize()];
+    for (int i = 0; i < getChildrenSize(); i++) {
+      arr[i] = getChild(i);
+    }
+    return arr;
+  }
 
   Node getChild(int idx);
 

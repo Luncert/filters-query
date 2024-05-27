@@ -20,7 +20,7 @@ public abstract class Value implements Node {
   }
 
   @Override
-  public int getChildenSize() {
+  public int getChildrenSize() {
     return 0;
   }
 

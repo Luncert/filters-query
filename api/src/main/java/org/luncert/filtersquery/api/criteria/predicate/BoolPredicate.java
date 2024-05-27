@@ -28,7 +28,7 @@ public abstract class BoolPredicate implements Predicate {
   }
 
   @Override
-  public int getChildenSize() {
+  public int getChildrenSize() {
     return predicates.length;
   }
 
@@ -39,7 +39,7 @@ public abstract class BoolPredicate implements Predicate {
 
   @Override
   public void insertChild(int idx, Node newChild) {
-    if (idx < 0 || idx > getChildenSize()) {
+    if (idx < 0 || idx > getChildrenSize()) {
       throw new IndexOutOfBoundsException(idx);
     }
     if (!(newChild instanceof Predicate)) {
@@ -48,7 +48,7 @@ public abstract class BoolPredicate implements Predicate {
 
     var newArr = new Predicate[predicates.length + 1];
     System.arraycopy(predicates, 0, newArr, 0, idx);
-    if (idx < getChildenSize()) {
+    if (idx < getChildrenSize()) {
       System.arraycopy(predicates, idx, newArr, idx + 1, predicates.length - idx);
     }
     newArr[idx] = (Predicate) newChild;
@@ -80,7 +80,7 @@ public abstract class BoolPredicate implements Predicate {
   }
 
   protected void checkIndex(int idx) {
-    if (idx < 0 || idx >= getChildenSize()) {
+    if (idx < 0 || idx >= getChildrenSize()) {
       throw new IndexOutOfBoundsException(idx);
     }
   }

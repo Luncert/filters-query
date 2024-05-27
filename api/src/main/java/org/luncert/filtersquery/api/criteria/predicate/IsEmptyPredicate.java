@@ -15,7 +15,7 @@ public class IsEmptyPredicate extends PredicateWithReference {
   }
 
   @Override
-  public int getChildenSize() {
+  public int getChildrenSize() {
     return 0;
   }
 

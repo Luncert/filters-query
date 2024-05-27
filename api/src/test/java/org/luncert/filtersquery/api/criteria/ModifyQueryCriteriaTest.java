@@ -21,10 +21,10 @@ public class ModifyQueryCriteriaTest {
     queryCriteria.modifyPredicate(p -> {
       var children = new ArrayList<Node>();
       int i = 0;
-      while (i < p.getChildenSize()) {
+      while (i < p.getChildrenSize()) {
         var child = p.getChild(i);
         if (child instanceof AndPredicate) {
-          child.insertChild(child.getChildenSize(), ref("x").gt(number(10)));
+          child.insertChild(child.getChildrenSize(), ref("x").gt(number(10)));
         }
         children.add(child);
         i++;

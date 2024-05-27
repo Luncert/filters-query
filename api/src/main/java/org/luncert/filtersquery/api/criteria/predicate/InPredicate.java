@@ -21,7 +21,7 @@ public class InPredicate extends PredicateWithReference {
   }
 
   @Override
-  public int getChildenSize() {
+  public int getChildrenSize() {
     return values.length;
   }
 

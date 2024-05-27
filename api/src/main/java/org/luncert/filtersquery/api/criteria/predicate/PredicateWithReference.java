@@ -25,7 +25,7 @@ public abstract class PredicateWithReference implements Predicate {
   }
 
   protected void checkIndex(int idx) {
-    if (idx < 0 || idx >= getChildenSize()) {
+    if (idx < 0 || idx >= getChildrenSize()) {
       throw new IndexOutOfBoundsException(idx);
     }
   }

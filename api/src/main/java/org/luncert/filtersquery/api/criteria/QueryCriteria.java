@@ -26,7 +26,7 @@ public class QueryCriteria {
   protected SplitPredicateResult splitPredicate(Predicate predicate, String fieldName, List<Predicate> out) {
     if (predicate.isBoolExpression()) {
       int i = 0;
-      while (i < predicate.getChildenSize()) {
+      while (i < predicate.getChildrenSize()) {
         var child = predicate.getChild(i);
         var remove = splitPredicate(child.as(Predicate.class), fieldName, out);
         switch (remove) {
@@ -38,9 +38,9 @@ public class QueryCriteria {
           case NONE -> i++;
         }
       }
-      if (predicate.getChildenSize() == 0) {
+      if (predicate.getChildrenSize() == 0) {
         return SplitPredicateResult.REMOVE;
-      } else if (predicate.getChildenSize() == 1) {
+      } else if (predicate.getChildrenSize() == 1) {
         return SplitPredicateResult.UNWRAP;
       }
     } else {
