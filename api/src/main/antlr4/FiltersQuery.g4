@@ -8,8 +8,38 @@ filtersQuery:
     ;
 
 filterBy:
-    FILTER WS BY WS filters
+    FILTER (WS conjunction)? WS BY WS filters
     ;
+
+// conjunction
+
+conjunction:
+    aliasList WS ON WS conjunctionFilters
+    ;
+
+aliasList:
+    entityName WS entityAliasName (WS? COMMA WS? entityName WS entityAliasName)*
+    ;
+
+conjunctionFilters:
+    conjunctionFilter opConjunctionFilter*
+    | wrappedConjunctionFilters opConjunctionFilter*
+    ;
+
+wrappedConjunctionFilters:
+    L_PAREN WS? conjunctionFilters WS? R_PAREN
+    ;
+
+opConjunctionFilter:
+    boolOperator (conjunctionFilter | wrappedConjunctionFilters)
+    ;
+
+conjunctionFilter:
+    conjunctionEqualCriteria
+    | conjunctionNotEqualCriteria
+    ;
+
+// filters
 
 filters:
     filter opFilter*
@@ -60,19 +90,27 @@ endsWithCriteria: propertyName WS ENDSWITH WS stringPropertyValue;
 
 likeCriteria: propertyName WS LIKE WS stringPropertyValue;
 
-equalCriteria: propertyName WS? EQUALS WS? propertyValueWithBoolAndNull;
+equalCriteria: propertyName WS? EQUALS WS? propertyValueWithReferenceBoolNull;
 
-notEqualCriteria: propertyName WS? NOT_EQUALS WS? propertyValueWithBoolAndNull;
+notEqualCriteria: propertyName WS? NOT_EQUALS WS? propertyValueWithReferenceBoolNull;
 
-greaterThanCriteria: propertyName WS? GREATER WS? propertyValue;
+greaterThanCriteria: propertyName WS? GREATER WS? propertyValueWithReference;
 
-greaterEqualThanCriteria: propertyName WS? GREATER_OR_EQUALS WS? propertyValue;
+greaterEqualThanCriteria: propertyName WS? GREATER_OR_EQUALS WS? propertyValueWithReference;
 
-lessThanCriteria: propertyName WS? LESS WS? propertyValue;
+lessThanCriteria: propertyName WS? LESS WS? propertyValueWithReference;
 
-lessEqualThanCriteria: propertyName WS? LESS_OR_EQUALS WS? propertyValue;
+lessEqualThanCriteria: propertyName WS? LESS_OR_EQUALS WS? propertyValueWithReference;
 
 inCriteria: propertyName WS? IN WS? propertyValueList;
+
+// used by conjunction
+
+conjunctionEqualCriteria: propertyName WS? EQUALS WS? propertyName;
+
+conjunctionNotEqualCriteria: propertyName WS? NOT_EQUALS WS? propertyName;
+
+// others
 
 sortBy:
     WS SORT WS BY WS sorts
@@ -94,12 +132,20 @@ limit:
     WS LIMIT WS decimal
     ;
 
-propertyName:
+entityName:
     IDENTIFIER
     ;
 
+entityAliasName:
+    IDENTIFIER
+    ;
+
+propertyName:
+    IDENTIFIER (DOT IDENTIFIER)?
+    ;
+
 propertyValueList:
-    L_BRACKET WS? propertyValueWithBoolAndNull (WS? COMMA WS? propertyValueWithBoolAndNull)* WS? R_BRACKET
+    L_BRACKET WS? propertyValueWithReferenceBoolNull (WS? COMMA WS? propertyValueWithReferenceBoolNull)* WS? R_BRACKET
     ;
 
 propertyValue:
@@ -109,13 +155,16 @@ propertyValue:
     | INTERPRETED_STRING_LIT
     ;
 
-propertyValueWithBoolAndNull:
-    ZERO
+propertyValueWithReference:
+    propertyValue
+    | propertyName
+    ;
+
+propertyValueWithReferenceBoolNull:
+    propertyValue
+    | propertyName
     | TRUE
     | FALSE
-    | DECIMAL_LIT
-    | FLOAT_LIT
-    | INTERPRETED_STRING_LIT
     | NULL
     ;
 

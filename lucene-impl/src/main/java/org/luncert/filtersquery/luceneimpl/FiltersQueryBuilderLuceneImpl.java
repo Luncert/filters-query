@@ -49,7 +49,7 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
   }
 
   @Override
-  public void operator(Token operator) {
+  public void operator(Token operator, boolean inConjunction) {
     operations.add(operator.getType());
   }
 

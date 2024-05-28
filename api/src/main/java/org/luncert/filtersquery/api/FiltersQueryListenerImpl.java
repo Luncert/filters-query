@@ -1,5 +1,6 @@
 package org.luncert.filtersquery.api;
 
+import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.luncert.filtersquery.api.grammar.FiltersQueryBaseListener;
@@ -9,10 +10,64 @@ import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
 public class FiltersQueryListenerImpl extends FiltersQueryBaseListener {
 
   private final FiltersQueryBuilder queryBuilder;
+  private boolean inConjunction;
 
   @Override
   public void exitFiltersQuery(FiltersQueryParser.FiltersQueryContext ctx) {
     queryBuilder.end();
+  }
+
+  @Override
+  public void enterConjunction(FiltersQueryParser.ConjunctionContext ctx) {
+    inConjunction = true;
+  }
+
+  @Override
+  public void exitConjunction(FiltersQueryParser.ConjunctionContext ctx) {
+    inConjunction = false;
+  }
+
+  @Override
+  public void enterAliasList(FiltersQueryParser.AliasListContext ctx) {
+    var alias = new HashMap<String, String>();
+    String entityName = null;
+    for (int i = 0; i < ctx.getChildCount(); i++) {
+      var child = ctx.getChild(i);
+      if (child instanceof FiltersQueryParser.EntityNameContext) {
+        entityName = child.getText();
+      } else if (child instanceof FiltersQueryParser.EntityAliasNameContext) {
+        assert entityName != null;
+        alias.put(entityName, child.getText());
+        entityName = null;
+      }
+    }
+    queryBuilder.defineAlias(alias);
+  }
+
+  @Override
+  public void enterConjunctionEqualCriteria(FiltersQueryParser.ConjunctionEqualCriteriaContext ctx) {
+    queryBuilder.conjunctionEqual(
+        ctx.propertyName().get(0).getText(),
+        ctx.propertyName().get(1).getText()
+    );
+  }
+
+  @Override
+  public void enterConjunctionNotEqualCriteria(FiltersQueryParser.ConjunctionNotEqualCriteriaContext ctx) {
+    queryBuilder.conjunctionNotEqual(
+        ctx.propertyName().get(0).getText(),
+        ctx.propertyName().get(1).getText()
+    );
+  }
+
+  @Override
+  public void enterWrappedConjunctionFilters(FiltersQueryParser.WrappedConjunctionFiltersContext ctx) {
+    queryBuilder.enterConjunctionParentheses();
+  }
+
+  @Override
+  public void exitWrappedConjunctionFilters(FiltersQueryParser.WrappedConjunctionFiltersContext ctx) {
+    queryBuilder.exitConjunctionParentheses();
   }
 
   @Override
@@ -27,7 +82,7 @@ public class FiltersQueryListenerImpl extends FiltersQueryBaseListener {
 
   @Override
   public void enterBoolOperator(FiltersQueryParser.BoolOperatorContext ctx) {
-    queryBuilder.operator(((TerminalNode) ctx.getChild(1)).getSymbol());
+    queryBuilder.operator(((TerminalNode) ctx.getChild(1)).getSymbol(), inConjunction);
   }
 
   @Override
@@ -65,34 +120,34 @@ public class FiltersQueryListenerImpl extends FiltersQueryBaseListener {
 
   @Override
   public void enterEqualCriteria(FiltersQueryParser.EqualCriteriaContext ctx) {
-    queryBuilder.equal(ctx.propertyName().getText(), ctx.propertyValueWithBoolAndNull().getChild(0));
+    queryBuilder.equal(ctx.propertyName().getText(), ctx.propertyValueWithReferenceBoolNull().getChild(0));
   }
 
   @Override
   public void enterNotEqualCriteria(FiltersQueryParser.NotEqualCriteriaContext ctx) {
-    queryBuilder.notEqual(ctx.propertyName().getText(), ctx.propertyValueWithBoolAndNull().getChild(0));
+    queryBuilder.notEqual(ctx.propertyName().getText(), ctx.propertyValueWithReferenceBoolNull().getChild(0));
   }
 
   @Override
   public void enterGreaterThanCriteria(FiltersQueryParser.GreaterThanCriteriaContext ctx) {
-    queryBuilder.greaterThan(ctx.propertyName().getText(), ctx.propertyValue().getChild(0));
+    queryBuilder.greaterThan(ctx.propertyName().getText(), ctx.propertyValueWithReference().getChild(0));
   }
 
 
   @Override
   public void enterGreaterEqualThanCriteria(
       FiltersQueryParser.GreaterEqualThanCriteriaContext ctx) {
-    queryBuilder.greaterThanEqual(ctx.propertyName().getText(), ctx.propertyValue().getChild(0));
+    queryBuilder.greaterThanEqual(ctx.propertyName().getText(), ctx.propertyValueWithReference().getChild(0));
   }
 
   @Override
   public void enterLessThanCriteria(FiltersQueryParser.LessThanCriteriaContext ctx) {
-    queryBuilder.lessThan(ctx.propertyName().getText(), ctx.propertyValue().getChild(0));
+    queryBuilder.lessThan(ctx.propertyName().getText(), ctx.propertyValueWithReference().getChild(0));
   }
 
   @Override
   public void enterLessEqualThanCriteria(FiltersQueryParser.LessEqualThanCriteriaContext ctx) {
-    queryBuilder.lessThanEqual(ctx.propertyName().getText(), ctx.propertyValue().getChild(0));
+    queryBuilder.lessThanEqual(ctx.propertyName().getText(), ctx.propertyValueWithReference().getChild(0));
   }
 
   @Override

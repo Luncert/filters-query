@@ -22,6 +22,7 @@ FALSE                  : 'false';
 NIL_LIT                : 'empty';
 FILTER                 : 'filter';
 SORT                   : 'sort';
+ON                     : 'on';
 BY                     : 'by';
 ASC                    : 'asc';
 DESC                   : 'desc';

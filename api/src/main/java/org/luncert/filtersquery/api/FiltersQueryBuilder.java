@@ -1,16 +1,27 @@
 package org.luncert.filtersquery.api;
 
 import java.util.List;
+import java.util.Map;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public interface FiltersQueryBuilder {
 
+  void defineAlias(Map<String, String> alias);
+
+  void conjunctionEqual(String left, String right);
+
+  void conjunctionNotEqual(String left, String right);
+
+  void enterConjunctionParentheses();
+
+  void exitConjunctionParentheses();
+
   void enterParentheses();
 
   void exitParentheses();
 
-  void operator(Token operator);
+  void operator(Token operator, boolean inConjunction);
 
   void equal(String name, ParseTree value);
 

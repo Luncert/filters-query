@@ -1,11 +1,37 @@
 package org.luncert.filtersquery.api;
 
+import java.util.Map;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
 
 public abstract class BasicFiltersQueryBuilder implements FiltersQueryBuilder {
+
+  @Override
+  public void defineAlias(Map<String, String> alias) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void conjunctionEqual(String left, String right) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void conjunctionNotEqual(String left, String right) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void enterConjunctionParentheses() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void exitConjunctionParentheses() {
+    throw new UnsupportedOperationException();
+  }
 
   protected String getTokenName(Token token) {
     return FiltersQueryParser.VOCABULARY.getSymbolicName(token.getType());
