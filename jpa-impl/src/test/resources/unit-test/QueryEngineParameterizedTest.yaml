@@ -85,3 +85,6 @@ case_bool_not_null:
 case_join:
   criteria: 'associate tag filter by (severity = "Error" and tag.tag like "Bosh")'
   expected: [3]
+case_join_collection:
+  criteria: 'associate labels filter by (labels.label = "AX")'
+  expected: [1, 2]

@@ -52,7 +52,16 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   @Override
   public void associate(List<String> targets) {
     for (String target : targets) {
-      joins.put(target, entity.join(target, JoinType.LEFT));
+      var javaType = entity.get(target).getJavaType();
+      Join<E, ?> join;
+      if (List.class.isAssignableFrom(javaType)) {
+        join = entity.joinList(target, JoinType.LEFT);
+      } else if (Map.class.isAssignableFrom(javaType)) {
+        join = entity.joinMap(target, JoinType.LEFT);
+      } else {
+        join = entity.join(target, JoinType.LEFT);
+      }
+      joins.put(target, join);
     }
   }
 

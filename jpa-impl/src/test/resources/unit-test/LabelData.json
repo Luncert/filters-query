@@ -1,0 +1,22 @@
+[
+  {
+    "extId": "1",
+    "label": "AX"
+  },
+  {
+    "extId": "1",
+    "label": "BX"
+  },
+  {
+    "extId": "2",
+    "label": "AX"
+  },
+  {
+    "extId": "3",
+    "label": "BX"
+  },
+  {
+    "extId": "3",
+    "label": "CX"
+  }
+]

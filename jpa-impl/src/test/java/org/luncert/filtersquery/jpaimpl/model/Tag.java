@@ -1,4 +1,4 @@
-package org.luncert.filtersquery.jpaimpl;
+package org.luncert.filtersquery.jpaimpl.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -1,11 +1,16 @@
-package org.luncert.filtersquery.jpaimpl;
+package org.luncert.filtersquery.jpaimpl.model;
 
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,6 +42,14 @@ public class LogHeader implements Serializable {
   private long createdAt;
 
   @OneToOne
-  @JoinColumn(name = "id")
+  @JoinColumn(name = "extId")
   private Tag tag;
+
+  @OneToMany
+  @JoinColumn(
+      name = "extId",
+      updatable = false,
+      foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+  )
+  private List<Label> labels;
 }
