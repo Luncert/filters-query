@@ -17,6 +17,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.luncert.filtersquery.api.BasicFiltersQueryBuilder;
 import org.luncert.filtersquery.api.FiltersQueryBuilder;
 import org.luncert.filtersquery.api.Utils;
+import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
 
 /**
  * Parse criteria to FiltersQuery object.
@@ -62,12 +63,12 @@ public class FiltersQueryBuilderQueryCriteriaImpl extends BasicFiltersQueryBuild
   }
 
   @Override
-  public void equal(String name, ParseTree value) {
+  public void equal(String name, FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value) {
     predicates.add(ref(name).is(parseValue(value)));
   }
 
   @Override
-  public void notEqual(String name, ParseTree value) {
+  public void notEqual(String name, FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value) {
     predicates.add(ref(name).isNot(parseValue(value)));
   }
 
@@ -82,47 +83,47 @@ public class FiltersQueryBuilderQueryCriteriaImpl extends BasicFiltersQueryBuild
   }
 
   @Override
-  public void in(String name, List<ParseTree> values) {
+  public void in(String name, List<FiltersQueryParser.PropertyValueWithReferenceBoolNullContext> values) {
     predicates.add(ref(name).in(values.stream().map(this::parseValue).toArray(Value[]::new)));
   }
 
   @Override
-  public void greaterThanEqual(String name, ParseTree value) {
+  public void greaterThanEqual(String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
     predicates.add(ref(name).gte(parseValue(value)));
   }
 
   @Override
-  public void greaterThan(String name, ParseTree value) {
+  public void greaterThan(String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
     predicates.add(ref(name).gt(parseValue(value)));
   }
 
   @Override
-  public void lessThanEqual(String name, ParseTree value) {
+  public void lessThanEqual(String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
     predicates.add(ref(name).lte(parseValue(value)));
   }
 
   @Override
-  public void lessThan(String name, ParseTree value) {
+  public void lessThan(String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
     predicates.add(ref(name).lt(parseValue(value)));
   }
 
   @Override
-  public void between(String name, ParseTree startValue, ParseTree endValue) {
+  public void between(String name, FiltersQueryParser.PropertyValueContext startValue, FiltersQueryParser.PropertyValueContext endValue) {
     predicates.add(ref(name).between(parseValue(startValue), parseValue(endValue)));
   }
 
   @Override
-  public void startsWith(String name, ParseTree value) {
+  public void startsWith(String name, FiltersQueryParser.StringPropertyValueContext value) {
     predicates.add(ref(name).startsWith(parseValue(value)));
   }
 
   @Override
-  public void endsWith(String name, ParseTree value) {
+  public void endsWith(String name, FiltersQueryParser.StringPropertyValueContext value) {
     predicates.add(ref(name).endsWith(parseValue(value)));
   }
 
   @Override
-  public void like(String name, ParseTree value) {
+  public void like(String name, FiltersQueryParser.StringPropertyValueContext value) {
     predicates.add(ref(name).like(parseValue(value)));
   }
 
@@ -154,12 +155,20 @@ public class FiltersQueryBuilderQueryCriteriaImpl extends BasicFiltersQueryBuild
   }
 
   protected Value parseValue(ParseTree value) {
-    if (isStringLiteral(value)) {
-      return literal(Utils.unwrap(value.getText(), '"'));
+    //if (value instanceof FiltersQueryParser.PropertyValueWithReferenceBoolNullContext) {
+    //  return Value.NULL;
+    //}
+
+    var s = resolveStringLiteral(value);
+    if (s != null) {
+      return literal(Utils.unwrap(s, '"'));
     }
-    if (isDecimalLiteral(value)) {
-      return number(Long.valueOf(value.getText()));
+
+    s = resolveDecimalLiteral(value);
+    if (s != null) {
+      return number(Long.valueOf(s));
     }
+
     return number(Double.valueOf(value.getText()));
   }
 

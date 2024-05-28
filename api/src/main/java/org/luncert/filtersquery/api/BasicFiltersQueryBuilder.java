@@ -42,18 +42,44 @@ public abstract class BasicFiltersQueryBuilder implements FiltersQueryBuilder {
   }
 
   protected String getLiteral(ParseTree value) {
-    return isStringLiteral(value)
-        ? Utils.unwrap(value.getText(), '"')
-        : value.getText();
+    var s = resolveStringLiteral(value);
+    if (s != null) {
+      return Utils.unwrap(s, '"');
+    }
+    return value.getText();
   }
 
-  protected boolean isStringLiteral(ParseTree value) {
-    return getTokenName(((TerminalNode) value).getSymbol())
-        .equals("INTERPRETED_STRING_LIT");
+  protected String resolveStringLiteral(ParseTree value) {
+    if (value instanceof FiltersQueryParser.PropertyValueContext ctx) {
+      if (ctx.INTERPRETED_STRING_LIT() != null) {
+        return ctx.INTERPRETED_STRING_LIT().getText();
+      }
+    }
+
+    if (value instanceof FiltersQueryParser.StringPropertyValueContext ctx) {
+      return ctx.INTERPRETED_STRING_LIT().getText();
+    }
+
+    return null;
   }
 
-  protected boolean isDecimalLiteral(ParseTree value) {
-    var symbol = getTokenName(((TerminalNode) value).getSymbol());
-    return symbol.equals("DECIMAL_LIT") || symbol.equals("ZERO");
+  protected String resolveDecimalLiteral(ParseTree value) {
+    if (value instanceof FiltersQueryParser.PropertyValueWithReferenceContext ctx) {
+      value = ctx.propertyValue();
+      if (value == null) {
+        return null;
+      }
+    }
+
+    if (value instanceof FiltersQueryParser.PropertyValueContext ctx) {
+      if (ctx.DECIMAL_LIT() != null) {
+        return ctx.DECIMAL_LIT().getText();
+      }
+      if (ctx.ZERO() != null) {
+        return ctx.ZERO().getText();
+      }
+    }
+
+    return null;
   }
 }

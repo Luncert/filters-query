@@ -3,9 +3,11 @@ package org.luncert.filtersquery.api;
 import java.util.List;
 import java.util.Map;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ParseTree;
+import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
 
 public interface FiltersQueryBuilder {
+
+  // conjunction
 
   void defineAlias(Map<String, String> alias);
 
@@ -17,18 +19,20 @@ public interface FiltersQueryBuilder {
 
   void exitConjunctionParentheses();
 
+  // filter by predicates
+
   void enterParentheses();
 
   void exitParentheses();
 
   void operator(Token operator, boolean inConjunction);
 
-  void equal(String name, ParseTree value);
+  void equal(String name, FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value);
 
   /**
    * Assert column not equal to specified value, not null and not empty.
    */
-  void notEqual(String name, ParseTree value);
+  void notEqual(String name, FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value);
 
   /**
    * Assert column not null and not empty.
@@ -37,28 +41,32 @@ public interface FiltersQueryBuilder {
 
   void notEmpty(String name);
 
-  void in(String name, List<ParseTree> values);
+  void in(String name, List<FiltersQueryParser.PropertyValueWithReferenceBoolNullContext> values);
 
-  void greaterThanEqual(String name, ParseTree value);
+  void greaterThanEqual(String name, FiltersQueryParser.PropertyValueWithReferenceContext value);
 
-  void greaterThan(String name, ParseTree value);
+  void greaterThan(String name, FiltersQueryParser.PropertyValueWithReferenceContext value);
 
-  void lessThanEqual(String name, ParseTree value);
+  void lessThanEqual(String name, FiltersQueryParser.PropertyValueWithReferenceContext value);
 
-  void lessThan(String name, ParseTree value);
+  void lessThan(String name, FiltersQueryParser.PropertyValueWithReferenceContext value);
 
-  void between(String name, ParseTree startValue, ParseTree endValue);
+  void between(
+      String name,
+      FiltersQueryParser.PropertyValueContext startValue,
+      FiltersQueryParser.PropertyValueContext endValue
+  );
 
-  void startsWith(String name, ParseTree value);
+  void startsWith(String name, FiltersQueryParser.StringPropertyValueContext value);
 
-  void endsWith(String name, ParseTree value);
+  void endsWith(String name, FiltersQueryParser.StringPropertyValueContext value);
 
-  void like(String name, ParseTree value);
+  void like(String name, FiltersQueryParser.StringPropertyValueContext value);
 
   /**
    * Add order.
    *
-   * @param name order by field name
+   * @param name      order by field name
    * @param direction optional, ASC or DESC
    */
   void order(String name, Token direction);

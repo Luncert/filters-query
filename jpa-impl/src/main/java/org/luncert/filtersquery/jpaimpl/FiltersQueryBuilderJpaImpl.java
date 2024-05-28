@@ -6,7 +6,6 @@ import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.ParameterExpression;
 import jakarta.persistence.criteria.Path;
@@ -27,7 +26,6 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.luncert.filtersquery.api.BasicFiltersQueryBuilder;
 import org.luncert.filtersquery.api.FiltersQueryBuilder;
 import org.luncert.filtersquery.api.Utils;
@@ -110,7 +108,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   }
 
   @Override
-  public void equal(String name, ParseTree value) {
+  public void equal(String name, FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value) {
     if (isNull(value)) {
       Path<? extends Comparable<? super Object>> path = entity.get(name);
       predicates.add(criteriaBuilder.isNull(path));
@@ -124,7 +122,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
    * Assert column not equal to specified value, not null and not empty.
    */
   @Override
-  public void notEqual(String name, ParseTree value) {
+  public void notEqual(String name, FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value) {
     if (isNull(value)) {
       Path<? extends Comparable<? super Object>> path = entity.get(name);
       predicates.add(criteriaBuilder.isNotNull(path));
@@ -174,7 +172,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   }
 
   @Override
-  public void in(String name, List<ParseTree> values) {
+  public void in(String name, List<FiltersQueryParser.PropertyValueWithReferenceBoolNullContext> values) {
     Path<? extends Comparable<? super Object>> path = entity.get(name);
 
     AtomicBoolean containsNull = new AtomicBoolean(false);
@@ -195,31 +193,31 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   }
 
   @Override
-  public void greaterThanEqual(String name, ParseTree value) {
+  public void greaterThanEqual(String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
     predicates.add(createPredicate(name, value, criteriaBuilder::greaterThanOrEqualTo));
   }
 
   @Override
   public void greaterThan(
-      String name, ParseTree value) {
+      String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
     predicates.add(createPredicate(name, value, criteriaBuilder::greaterThan));
   }
 
   @Override
   public void lessThanEqual(
-      String name, ParseTree value) {
+      String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
     predicates.add(createPredicate(name, value, criteriaBuilder::lessThanOrEqualTo));
   }
 
   @Override
   public void lessThan(
-      String name, ParseTree value) {
+      String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
     predicates.add(createPredicate(name, value, criteriaBuilder::lessThan));
   }
 
   @Override
   public void between(
-      String name, ParseTree startValue, ParseTree endValue) {
+      String name, FiltersQueryParser.PropertyValueContext startValue, FiltersQueryParser.PropertyValueContext endValue) {
     Path<? extends Comparable<? super Object>> path = entity.get(name);
     ParameterExpression<? extends Comparable<? super Object>> p1 =
         createParameter(name, startValue);
@@ -230,7 +228,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
 
   @Override
   public void startsWith(
-      String name, ParseTree value) {
+      String name, FiltersQueryParser.StringPropertyValueContext value) {
     Path<?> path = entity.get(name);
     ParameterExpression<String> parameter = createParameter(name, value, literal -> literal + "%%");
     Predicate predicate = criteriaBuilder.like(path.as(String.class), parameter, '\\');
@@ -239,7 +237,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
 
   @Override
   public void endsWith(
-      String name, ParseTree value) {
+      String name, FiltersQueryParser.StringPropertyValueContext value) {
     Path<?> path = entity.get(name);
     ParameterExpression<String> parameter = createParameter(name, value, literal -> "%%" + literal);
     Predicate predicate = criteriaBuilder.like(path.as(String.class), parameter, '\\');
@@ -247,7 +245,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   }
 
   @Override
-  public void like(String name, ParseTree value) {
+  public void like(String name, FiltersQueryParser.StringPropertyValueContext value) {
     Path<?> path = entity.get(name);
     ParameterExpression<String> parameter = createParameter(
         name, value, literal -> "%%" + literal + "%%");
@@ -406,19 +404,25 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   }
 
   private String extractValueFromParseTree(ParseTree value) {
-    boolean interpretedStringLit = getTokenName(((TerminalNode) value).getSymbol())
-        .equals("INTERPRETED_STRING_LIT");
-    return interpretedStringLit
-        ? Utils.unwrap(value.getText(), '"')
-        : value.getText();
+    var s = resolveStringLiteral(value);
+    if (s != null) {
+      return Utils.unwrap(s, '"');
+    }
+
+    s = resolveDecimalLiteral(value);
+    if (s != null) {
+      return s;
+    }
+
+    return value.getText();
   }
 
   private boolean isNull(ParseTree value) {
-    if (value instanceof FiltersQueryParser.PropertyNameContext) {
-      return false;
+    if (value instanceof FiltersQueryParser.PropertyValueWithReferenceBoolNullContext ctx) {
+      return ctx.NULL() != null;
     }
-    var symbolName = getTokenName(((TerminalNode) value).getSymbol());
-    return symbolName.equals("NULL");
+
+    return false;
   }
 
   private boolean isLiteral(String name) {

@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
@@ -23,6 +22,7 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.SortedNumericSortField;
 import org.luncert.filtersquery.api.BasicFiltersQueryBuilder;
 import org.luncert.filtersquery.api.FiltersQueryBuilder;
+import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
 import org.luncert.filtersquery.luceneimpl.builder.TypedQueryBuilder;
 import org.luncert.filtersquery.luceneimpl.builder.TypedQueryBuilders;
 import org.luncert.filtersquery.luceneimpl.exception.FiltersQueryLucenceBuilderException;
@@ -54,12 +54,12 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
   }
 
   @Override
-  public void equal(String name, ParseTree value) {
+  public void equal(String name, FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value) {
     queries.add(getTypeMetadata(name).equal(name, getLiteral(value)));
   }
 
   @Override
-  public void notEqual(String name, ParseTree value) {
+  public void notEqual(String name, FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value) {
     queries.add(getTypeMetadata(name).notEqual(name, getLiteral(value)));
   }
 
@@ -74,47 +74,47 @@ public class FiltersQueryBuilderLuceneImpl extends BasicFiltersQueryBuilder {
   }
 
   @Override
-  public void in(String name, List<ParseTree> values) {
+  public void in(String name, List<FiltersQueryParser.PropertyValueWithReferenceBoolNullContext> values) {
     queries.add(getTypeMetadata(name).in(name, values.stream().map(this::getLiteral).toList()));
   }
 
   @Override
-  public void greaterThanEqual(String name, ParseTree value) {
+  public void greaterThanEqual(String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
     queries.add(getTypeMetadata(name).greaterEqualThan(name, getLiteral(value)));
   }
 
   @Override
-  public void greaterThan(String name, ParseTree value) {
+  public void greaterThan(String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
     queries.add(getTypeMetadata(name).greaterThan(name, getLiteral(value)));
   }
 
   @Override
-  public void lessThanEqual(String name, ParseTree value) {
+  public void lessThanEqual(String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
     queries.add(getTypeMetadata(name).lessEqualThan(name, getLiteral(value)));
   }
 
   @Override
-  public void lessThan(String name, ParseTree value) {
+  public void lessThan(String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
     queries.add(getTypeMetadata(name).lessThan(name, getLiteral(value)));
   }
 
   @Override
-  public void between(String name, ParseTree startValue, ParseTree endValue) {
+  public void between(String name, FiltersQueryParser.PropertyValueContext startValue, FiltersQueryParser.PropertyValueContext endValue) {
     queries.add(getTypeMetadata(name).between(name, getLiteral(startValue), getLiteral(endValue)));
   }
 
   @Override
-  public void startsWith(String name, ParseTree value) {
+  public void startsWith(String name, FiltersQueryParser.StringPropertyValueContext value) {
     queries.add(getTypeMetadata(name).startsWith(name, getLiteral(value)));
   }
 
   @Override
-  public void endsWith(String name, ParseTree value) {
+  public void endsWith(String name, FiltersQueryParser.StringPropertyValueContext value) {
     queries.add(getTypeMetadata(name).endsWith(name, getLiteral(value)));
   }
 
   @Override
-  public void like(String name, ParseTree value) {
+  public void like(String name, FiltersQueryParser.StringPropertyValueContext value) {
     queries.add(getTypeMetadata(name).like(name, getLiteral(value)));
   }
 

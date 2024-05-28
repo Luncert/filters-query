@@ -88,8 +88,8 @@ public class FiltersQueryListenerImpl extends FiltersQueryBaseListener {
   @Override
   public void enterBetweenCriteria(FiltersQueryParser.BetweenCriteriaContext ctx) {
     queryBuilder.between(ctx.propertyName().getText(),
-        ctx.betweenCriteriaValue().propertyValue(0).getChild(0),
-        ctx.betweenCriteriaValue().propertyValue(1).getChild(0)
+        ctx.betweenCriteriaValue().propertyValue(0),
+        ctx.betweenCriteriaValue().propertyValue(1)
     );
   }
 
@@ -105,58 +105,55 @@ public class FiltersQueryListenerImpl extends FiltersQueryBaseListener {
 
   @Override
   public void enterStartsWithCriteria(FiltersQueryParser.StartsWithCriteriaContext ctx) {
-    queryBuilder.startsWith(ctx.propertyName().getText(), ctx.stringPropertyValue().getChild(0));
+    queryBuilder.startsWith(ctx.propertyName().getText(), ctx.stringPropertyValue());
   }
 
   @Override
   public void enterEndsWithCriteria(FiltersQueryParser.EndsWithCriteriaContext ctx) {
-    queryBuilder.endsWith(ctx.propertyName().getText(), ctx.stringPropertyValue().getChild(0));
+    queryBuilder.endsWith(ctx.propertyName().getText(), ctx.stringPropertyValue());
   }
 
   @Override
   public void enterLikeCriteria(FiltersQueryParser.LikeCriteriaContext ctx) {
-    queryBuilder.like(ctx.propertyName().getText(), ctx.stringPropertyValue().getChild(0));
+    queryBuilder.like(ctx.propertyName().getText(), ctx.stringPropertyValue());
   }
 
   @Override
   public void enterEqualCriteria(FiltersQueryParser.EqualCriteriaContext ctx) {
-    queryBuilder.equal(ctx.propertyName().getText(), ctx.propertyValueWithReferenceBoolNull().getChild(0));
+    queryBuilder.equal(ctx.propertyName().getText(), ctx.propertyValueWithReferenceBoolNull());
   }
 
   @Override
   public void enterNotEqualCriteria(FiltersQueryParser.NotEqualCriteriaContext ctx) {
-    queryBuilder.notEqual(ctx.propertyName().getText(), ctx.propertyValueWithReferenceBoolNull().getChild(0));
+    queryBuilder.notEqual(ctx.propertyName().getText(), ctx.propertyValueWithReferenceBoolNull());
   }
 
   @Override
   public void enterGreaterThanCriteria(FiltersQueryParser.GreaterThanCriteriaContext ctx) {
-    queryBuilder.greaterThan(ctx.propertyName().getText(), ctx.propertyValueWithReference().getChild(0));
+    queryBuilder.greaterThan(ctx.propertyName().getText(), ctx.propertyValueWithReference());
   }
 
 
   @Override
   public void enterGreaterEqualThanCriteria(
       FiltersQueryParser.GreaterEqualThanCriteriaContext ctx) {
-    queryBuilder.greaterThanEqual(ctx.propertyName().getText(), ctx.propertyValueWithReference().getChild(0));
+    queryBuilder.greaterThanEqual(ctx.propertyName().getText(), ctx.propertyValueWithReference());
   }
 
   @Override
   public void enterLessThanCriteria(FiltersQueryParser.LessThanCriteriaContext ctx) {
-    queryBuilder.lessThan(ctx.propertyName().getText(), ctx.propertyValueWithReference().getChild(0));
+    queryBuilder.lessThan(ctx.propertyName().getText(), ctx.propertyValueWithReference());
   }
 
   @Override
   public void enterLessEqualThanCriteria(FiltersQueryParser.LessEqualThanCriteriaContext ctx) {
-    queryBuilder.lessThanEqual(ctx.propertyName().getText(), ctx.propertyValueWithReference().getChild(0));
+    queryBuilder.lessThanEqual(ctx.propertyName().getText(), ctx.propertyValueWithReference());
   }
 
   @Override
   public void enterInCriteria(FiltersQueryParser.InCriteriaContext ctx) {
-    var values = ctx.propertyValueList().children.stream()
-        .filter(v -> !(v instanceof TerminalNode))
-        .map(v -> v.getChild(0))
-        .toList();
-    queryBuilder.in(ctx.propertyName().getText(), values);
+    queryBuilder.in(ctx.propertyName().getText(),
+        ctx.propertyValueList().propertyValueWithReferenceBoolNull());
   }
 
   @Override
