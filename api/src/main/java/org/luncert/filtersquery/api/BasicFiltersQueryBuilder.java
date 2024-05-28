@@ -46,6 +46,12 @@ public abstract class BasicFiltersQueryBuilder implements FiltersQueryBuilder {
     if (s != null) {
       return Utils.unwrap(s, '"');
     }
+
+    s = resolveDecimalLiteral(value);
+    if (s != null) {
+      return s;
+    }
+
     return value.getText();
   }
 

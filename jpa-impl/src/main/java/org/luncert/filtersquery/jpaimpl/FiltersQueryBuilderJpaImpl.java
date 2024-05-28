@@ -28,7 +28,6 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.luncert.filtersquery.api.BasicFiltersQueryBuilder;
 import org.luncert.filtersquery.api.FiltersQueryBuilder;
-import org.luncert.filtersquery.api.Utils;
 import org.luncert.filtersquery.api.exception.IllegalParameterException;
 import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
 
@@ -182,7 +181,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
         return false;
       }
       return true;
-    }).map(this::extractValueFromParseTree).toList();
+    }).map(this::getLiteral).toList();
     var predicate = path.in(parsedValues);
 
     if (containsNull.get()) {
@@ -389,7 +388,7 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   @SuppressWarnings("unchecked")
   private <T extends Comparable<? super T>> ParameterExpression<T> createParameter(
       String name, ParseTree value, Function<String, String> valueModifier) {
-    String literal = extractValueFromParseTree(value);
+    String literal = getLiteral(value);
 
     Class<Object> type = entity.get(name).getModel().getBindableJavaType();
     ParameterExpression<?> parameter = criteriaBuilder.parameter(type);
@@ -401,20 +400,6 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
     }
 
     return (ParameterExpression<T>) parameter;
-  }
-
-  private String extractValueFromParseTree(ParseTree value) {
-    var s = resolveStringLiteral(value);
-    if (s != null) {
-      return Utils.unwrap(s, '"');
-    }
-
-    s = resolveDecimalLiteral(value);
-    if (s != null) {
-      return s;
-    }
-
-    return value.getText();
   }
 
   private boolean isNull(ParseTree value) {
