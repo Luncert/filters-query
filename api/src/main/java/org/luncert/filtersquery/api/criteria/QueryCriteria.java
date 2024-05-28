@@ -8,6 +8,7 @@ import org.luncert.filtersquery.api.criteria.predicate.PredicateWithReference;
 @AllArgsConstructor
 public class QueryCriteria {
 
+  private List<String> associateTargets;
   private Predicate predicate;
   private Sorts sorts;
   private Integer offset;
@@ -68,8 +69,16 @@ public class QueryCriteria {
 
   @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder("filter by ");
-    builder.append(predicate)
+    StringBuilder builder = new StringBuilder();
+
+    if (associateTargets != null && !associateTargets.isEmpty()) {
+      builder.append("associate ")
+          .append(String.join(", ", associateTargets))
+          .append(' ');
+    }
+
+    builder.append("filter by ")
+        .append(predicate)
         .append(sorts);
 
     if (offset != null && limit != null) {

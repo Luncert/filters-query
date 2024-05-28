@@ -26,6 +26,7 @@ import org.luncert.filtersquery.api.criteria.dsl.spec.ISortByAndPaginationAndBui
 public class QueryCriteriaBuilder implements IFilterBySpec,
     ISortByAndPaginationAndBuildSpec, ILimitSpec {
 
+  private List<String> associateTargets;
   private Predicate predicate;
   private Sort[] sorts;
   private Integer offset;
@@ -33,6 +34,12 @@ public class QueryCriteriaBuilder implements IFilterBySpec,
 
   public static QueryCriteriaBuilder create() {
     return new QueryCriteriaBuilder();
+  }
+
+  @Override
+  public IFilterBySpec associates(List<String> associateTargets) {
+    this.associateTargets = associateTargets;
+    return this;
   }
 
   @Override
@@ -61,6 +68,6 @@ public class QueryCriteriaBuilder implements IFilterBySpec,
 
   @Override
   public QueryCriteria build() {
-    return new QueryCriteria(predicate, new Sorts(sorts == null ? null : List.of(sorts)), offset, limit);
+    return new QueryCriteria(associateTargets, predicate, new Sorts(sorts == null ? null : List.of(sorts)), offset, limit);
   }
 }

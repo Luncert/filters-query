@@ -24,6 +24,7 @@ import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
 public class FiltersQueryBuilderQueryCriteriaImpl extends BasicFiltersQueryBuilder {
 
   private final Stack<Integer> parenStack = new Stack<>();
+  private List<String> associateTargets;
   private List<Predicate> predicates = new ArrayList<>();
   private final List<Sort> sorts = new ArrayList<>();
   private List<Integer> operations = new LinkedList<>();
@@ -37,6 +38,11 @@ public class FiltersQueryBuilderQueryCriteriaImpl extends BasicFiltersQueryBuild
   public static class ResultImpl implements FiltersQueryBuilder.Result {
 
     private QueryCriteria queryCriteria;
+  }
+
+  @Override
+  public void associate(List<String> targets) {
+    associateTargets = targets;
   }
 
   @Override
@@ -139,7 +145,7 @@ public class FiltersQueryBuilderQueryCriteriaImpl extends BasicFiltersQueryBuild
   @Override
   public void end() {
     Predicate predicate = mergePredicates(0);
-    result.queryCriteria = new QueryCriteria(predicate, new Sorts(sorts), offset, limit);
+    result.queryCriteria = new QueryCriteria(associateTargets, predicate, new Sorts(sorts), offset, limit);
   }
 
   @Override

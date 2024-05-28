@@ -5,6 +5,7 @@ import static org.luncert.filtersquery.api.criteria.Predicate.*;
 import static org.luncert.filtersquery.api.criteria.Value.literal;
 import static org.luncert.filtersquery.api.criteria.Value.number;
 
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.luncert.filtersquery.api.FiltersQueryEngine;
@@ -13,8 +14,9 @@ public class QueryQueryCriteriaBuilderTest {
 
   @Test
   public void test1() {
-    var input = "filter by ((a between [0, 100] and b like \"hi\") or c >= 10) sort by a asc, b desc offset 10 limit 10";
+    var input = "associate tags filter by ((a between [0, 100] and b like \"hi\") or c >= 10) sort by a asc, b desc offset 10 limit 10";
     var queryCriteria = QueryCriteriaBuilder.create()
+        .associates(List.of("tags"))
         .filterBy(or(
             and(
                 ref("a").between(number(0), number(100)),
