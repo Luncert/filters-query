@@ -2,6 +2,8 @@ package org.luncert.filtersquery.jpaimpl;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import java.io.Serial;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
@@ -34,4 +36,7 @@ public class LogHeader implements Serializable {
 
   private long createdAt;
 
+  @OneToOne
+  @JoinColumn(name = "id")
+  private Tag tag;
 }

@@ -4,11 +4,39 @@ import VariableLexer;
 // TODO: support in range filter
 
 filtersQuery:
-    WS? (associate WS)? filterBy sortBy? offset? limit? WS? EOF
+    WS? filterBy sortBy? offset? limit? WS? EOF
     ;
 
 filterBy:
-    FILTER WS BY WS filters
+    FILTER (WS conjunction)? WS BY WS filters
+    ;
+
+// conjunction
+
+conjunction:
+    aliasList WS ON WS conjunctionFilters
+    ;
+
+aliasList:
+    entityName WS entityAliasName (WS? COMMA WS? entityName WS entityAliasName)*
+    ;
+
+conjunctionFilters:
+    conjunctionFilter opConjunctionFilter*
+    | wrappedConjunctionFilters opConjunctionFilter*
+    ;
+
+wrappedConjunctionFilters:
+    L_PAREN WS? conjunctionFilters WS? R_PAREN
+    ;
+
+opConjunctionFilter:
+    boolOperator (conjunctionFilter | wrappedConjunctionFilters)
+    ;
+
+conjunctionFilter:
+    conjunctionEqualCriteria
+    | conjunctionNotEqualCriteria
     ;
 
 // filters
@@ -76,15 +104,13 @@ lessEqualThanCriteria: propertyName WS? LESS_OR_EQUALS WS? propertyValueWithRefe
 
 inCriteria: propertyName WS? IN WS? propertyValueList;
 
+// used by conjunction
+
+conjunctionEqualCriteria: propertyName WS? EQUALS WS? propertyName;
+
+conjunctionNotEqualCriteria: propertyName WS? NOT_EQUALS WS? propertyName;
+
 // others
-
-associate:
-    ASSOCIATE WS associateTargets
-    ;
-
-associateTargets:
-    associateTarget (WS? COMMA WS? associateTarget)*
-    ;
 
 sortBy:
     WS SORT WS BY WS sorts
@@ -111,10 +137,6 @@ entityName:
     ;
 
 entityAliasName:
-    IDENTIFIER
-    ;
-
-associateTarget:
     IDENTIFIER
     ;
 

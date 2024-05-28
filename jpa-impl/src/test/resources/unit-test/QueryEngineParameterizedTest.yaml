@@ -83,5 +83,5 @@ case_bool_not_null:
   criteria: 'filter by (bool != null)'
   expected: [6, 7]
 case_join:
-  criteria: 'filter LogHeader a, Tag t on (a.id = t.extId) by (createdAt like "9322")'
-  expected: [1]
+  criteria: 'associate tag filter by (severity = "Error" and tag.tag like "Bosh")'
+  expected: [3]

@@ -20,6 +20,7 @@ FALSE                  : 'false';
 // Key words
 
 NIL_LIT                : 'empty';
+ASSOCIATE              : 'associate';
 FILTER                 : 'filter';
 SORT                   : 'sort';
 ON                     : 'on';

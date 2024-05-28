@@ -7,25 +7,13 @@ import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
 
 public interface FiltersQueryBuilder {
 
-  // conjunction
-
-  void defineAlias(Map<String, String> alias);
-
-  void conjunctionEqual(String left, String right);
-
-  void conjunctionNotEqual(String left, String right);
-
-  void enterConjunctionParentheses();
-
-  void exitConjunctionParentheses();
-
-  // filter by predicates
+  void associate(List<String> targets);
 
   void enterParentheses();
 
   void exitParentheses();
 
-  void operator(Token operator, boolean inConjunction);
+  void operator(Token operator);
 
   void equal(String name, FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value);
 

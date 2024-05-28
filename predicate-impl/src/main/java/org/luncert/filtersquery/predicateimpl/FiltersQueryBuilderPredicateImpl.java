@@ -49,7 +49,7 @@ public class FiltersQueryBuilderPredicateImpl<E> extends BasicFiltersQueryBuilde
   }
 
   @Override
-  public void operator(Token operator, boolean inConjunction) {
+  public void operator(Token operator) {
     operations.add(operator.getType());
   }
 

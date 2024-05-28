@@ -7,7 +7,6 @@ import static org.luncert.filtersquery.api.criteria.Value.number;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,11 +40,6 @@ public class FiltersQueryBuilderQueryCriteriaImpl extends BasicFiltersQueryBuild
   }
 
   @Override
-  public void defineAlias(Map<String, String> alias) {
-    // TODO:
-  }
-
-  @Override
   public void enterParentheses() {
     parenStack.push(predicates.size());
   }
@@ -58,7 +52,7 @@ public class FiltersQueryBuilderQueryCriteriaImpl extends BasicFiltersQueryBuild
   }
 
   @Override
-  public void operator(Token operator, boolean inConjunction) {
+  public void operator(Token operator) {
     operations.add(operator.getType());
   }
 

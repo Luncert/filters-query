@@ -1,35 +1,14 @@
 package org.luncert.filtersquery.api;
 
-import java.util.Map;
+import java.util.List;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
 
 public abstract class BasicFiltersQueryBuilder implements FiltersQueryBuilder {
 
   @Override
-  public void defineAlias(Map<String, String> alias) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void conjunctionEqual(String left, String right) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void conjunctionNotEqual(String left, String right) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void enterConjunctionParentheses() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void exitConjunctionParentheses() {
+  public void associate(List<String> targets) {
     throw new UnsupportedOperationException();
   }
 
@@ -56,13 +35,17 @@ public abstract class BasicFiltersQueryBuilder implements FiltersQueryBuilder {
   }
 
   protected String resolveStringLiteral(ParseTree value) {
+    if (value instanceof FiltersQueryParser.PropertyValueWithReferenceBoolNullContext ctx) {
+      value = ctx.propertyValue();
+    } else if (value instanceof FiltersQueryParser.PropertyValueWithReferenceContext ctx) {
+      value = ctx.propertyValue();
+    }
+
     if (value instanceof FiltersQueryParser.PropertyValueContext ctx) {
       if (ctx.INTERPRETED_STRING_LIT() != null) {
         return ctx.INTERPRETED_STRING_LIT().getText();
       }
-    }
-
-    if (value instanceof FiltersQueryParser.StringPropertyValueContext ctx) {
+    } else if (value instanceof FiltersQueryParser.StringPropertyValueContext ctx) {
       return ctx.INTERPRETED_STRING_LIT().getText();
     }
 

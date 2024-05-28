@@ -1,6 +1,5 @@
 package org.luncert.filtersquery.api;
 
-import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.luncert.filtersquery.api.grammar.FiltersQueryBaseListener;
@@ -10,64 +9,17 @@ import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
 public class FiltersQueryListenerImpl extends FiltersQueryBaseListener {
 
   private final FiltersQueryBuilder queryBuilder;
-  private boolean inConjunction;
-
   @Override
   public void exitFiltersQuery(FiltersQueryParser.FiltersQueryContext ctx) {
     queryBuilder.end();
   }
 
   @Override
-  public void enterConjunction(FiltersQueryParser.ConjunctionContext ctx) {
-    inConjunction = true;
-  }
-
-  @Override
-  public void exitConjunction(FiltersQueryParser.ConjunctionContext ctx) {
-    inConjunction = false;
-  }
-
-  @Override
-  public void enterAliasList(FiltersQueryParser.AliasListContext ctx) {
-    var alias = new HashMap<String, String>();
-    String entityName = null;
-    for (int i = 0; i < ctx.getChildCount(); i++) {
-      var child = ctx.getChild(i);
-      if (child instanceof FiltersQueryParser.EntityNameContext) {
-        entityName = child.getText();
-      } else if (child instanceof FiltersQueryParser.EntityAliasNameContext) {
-        assert entityName != null;
-        alias.put(entityName, child.getText());
-        entityName = null;
-      }
-    }
-    queryBuilder.defineAlias(alias);
-  }
-
-  @Override
-  public void enterConjunctionEqualCriteria(FiltersQueryParser.ConjunctionEqualCriteriaContext ctx) {
-    queryBuilder.conjunctionEqual(
-        ctx.propertyName().get(0).getText(),
-        ctx.propertyName().get(1).getText()
-    );
-  }
-
-  @Override
-  public void enterConjunctionNotEqualCriteria(FiltersQueryParser.ConjunctionNotEqualCriteriaContext ctx) {
-    queryBuilder.conjunctionNotEqual(
-        ctx.propertyName().get(0).getText(),
-        ctx.propertyName().get(1).getText()
-    );
-  }
-
-  @Override
-  public void enterWrappedConjunctionFilters(FiltersQueryParser.WrappedConjunctionFiltersContext ctx) {
-    queryBuilder.enterConjunctionParentheses();
-  }
-
-  @Override
-  public void exitWrappedConjunctionFilters(FiltersQueryParser.WrappedConjunctionFiltersContext ctx) {
-    queryBuilder.exitConjunctionParentheses();
+  public void enterAssociateTargets(FiltersQueryParser.AssociateTargetsContext ctx) {
+    var targets = ctx.children.stream()
+        .filter(c -> c instanceof FiltersQueryParser.AssociateTargetContext)
+        .map(c -> ((FiltersQueryParser.AssociateTargetContext) c).IDENTIFIER().getText()).toList();
+    queryBuilder.associate(targets);
   }
 
   @Override
@@ -82,7 +34,7 @@ public class FiltersQueryListenerImpl extends FiltersQueryBaseListener {
 
   @Override
   public void enterBoolOperator(FiltersQueryParser.BoolOperatorContext ctx) {
-    queryBuilder.operator(((TerminalNode) ctx.getChild(1)).getSymbol(), inConjunction);
+    queryBuilder.operator(((TerminalNode) ctx.getChild(1)).getSymbol());
   }
 
   @Override
