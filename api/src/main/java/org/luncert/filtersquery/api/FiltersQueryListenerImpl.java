@@ -1,6 +1,7 @@
 package org.luncert.filtersquery.api;
 
 import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.luncert.filtersquery.api.grammar.FiltersQueryBaseListener;
 import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
@@ -39,9 +40,22 @@ public class FiltersQueryListenerImpl extends FiltersQueryBaseListener {
 
   @Override
   public void enterBetweenCriteria(FiltersQueryParser.BetweenCriteriaContext ctx) {
+    boolean isCommaFirst = true;
+    for (ParseTree child : ctx.betweenCriteriaValue().children) {
+      if (child instanceof FiltersQueryParser.PropertyValueContext) {
+        isCommaFirst = false;
+        break;
+      } else if (child instanceof TerminalNode node) {
+        if (FiltersQueryParser.VOCABULARY.getSymbolicName(
+            node.getSymbol().getType()).equals("COMMA")) {
+          break;
+        }
+      }
+    }
+
     queryBuilder.between(ctx.propertyName().getText(),
-        ctx.betweenCriteriaValue().propertyValue(0),
-        ctx.betweenCriteriaValue().propertyValue(1)
+        isCommaFirst ? null : ctx.betweenCriteriaValue().propertyValue(0),
+        ctx.betweenCriteriaValue().propertyValue(isCommaFirst ? 0 : 1)
     );
   }
 

@@ -55,11 +55,14 @@ public class QueryEngineParameterizedTest {
 
   @Before
   public void before() {
-    List<LogHeader> logHeaders = TestKit.loadData("unit-test/LogHeaderData.json", new TypeReference<>() { });
+    List<LogHeader> logHeaders = TestKit.loadData("unit-test/LogHeaderData.json", new TypeReference<>() {
+    });
     logHeaderRepo.saveAll(logHeaders);
-    List<Tag> tags = TestKit.loadData("unit-test/TagData.json", new TypeReference<>() { });
+    List<Tag> tags = TestKit.loadData("unit-test/TagData.json", new TypeReference<>() {
+    });
     tagRepo.saveAll(tags);
-    List<Label> labels = TestKit.loadData("unit-test/LabelData.json", new TypeReference<>() { });
+    List<Label> labels = TestKit.loadData("unit-test/LabelData.json", new TypeReference<>() {
+    });
     labelRepo.saveAll(labels);
   }
 
@@ -78,41 +81,44 @@ public class QueryEngineParameterizedTest {
     } else {
       results = searchEngine.search(criteria).stream().map(LogHeader::getId).toList();
     }
-    List<Long> expectData = loader.extractAs(testCase + ".expected", new TypeReference<>() {});
+    List<Long> expectData = loader.extractAs(testCase + ".expected", new TypeReference<>() {
+    });
     TestKit.assertEquals(results, expectData);
   }
 
   @Parameterized.Parameters(name = "{0}")
   public static Collection<Object> data() {
     return List.of(
-        // "case_without_filters_with_offset_and_limit",
-        // "case_createdAt_equal",
-        // "case_categoryId_and_subCategoryId_equal",
-        // "case_externalReference_or_severity_equal",
-        // "case_externalReference_or_severity_equal_with_offset_and_limit",
-        // "case_externalReference_or_severity_equal_sort_by_id_desc",
-        // "case_externalReference_or_severity_equal_with_sort_offset_and_limit",
-        // "case_subCategoryId_not_equal",
-        // "case_id_not_equal",
-        // "case_subCategoryId_empty",
-        // "case_subCategoryId_not_empty",
-        // "case_categoryId_lessThan",
-        // "case_id_greaterEqualThan",
-        // "case_id_greaterThan",
-        // "case_id_lessEqualThan",
-        // "case_id_lessThan",
-        // "case_id_between",
-        // "case_externalReference_startsWith",
-        // "case_externalReference_endsWith",
-        // "case_createdAt_like",
-        // "case_paren",
-        // "case_in",
-        // "case_subCategoryId_equal_null",
-        // "case_subCategoryId_not_null",
-        // "case_subCategoryId_in_null",
-        // "case_bool_equal_true",
-        // "case_bool_equal_false",
-        // "case_bool_not_null",
+        "case_without_filters_with_offset_and_limit",
+        "case_createdAt_equal",
+        "case_categoryId_and_subCategoryId_equal",
+        "case_externalReference_or_severity_equal",
+        "case_externalReference_or_severity_equal_with_offset_and_limit",
+        "case_externalReference_or_severity_equal_sort_by_id_desc",
+        "case_externalReference_or_severity_equal_with_sort_offset_and_limit",
+        "case_subCategoryId_not_equal",
+        "case_id_not_equal",
+        "case_subCategoryId_empty",
+        "case_subCategoryId_not_empty",
+        "case_categoryId_lessThan",
+        "case_id_greaterEqualThan",
+        "case_id_greaterThan",
+        "case_id_lessEqualThan",
+        "case_id_lessThan",
+        "case_id_between",
+        "case_id_between_left",
+        "case_id_between_right",
+        "case_externalReference_startsWith",
+        "case_externalReference_endsWith",
+        "case_createdAt_like",
+        "case_paren",
+        "case_in",
+        "case_subCategoryId_equal_null",
+        "case_subCategoryId_not_null",
+        "case_subCategoryId_in_null",
+        "case_bool_equal_true",
+        "case_bool_equal_false",
+        "case_bool_not_null",
         "case_join",
         "case_join_collection"
     );

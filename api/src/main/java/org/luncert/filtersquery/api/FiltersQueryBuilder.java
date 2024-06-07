@@ -39,6 +39,12 @@ public interface FiltersQueryBuilder {
 
   void lessThan(String name, FiltersQueryParser.PropertyValueWithReferenceContext value);
 
+  /**
+   * Impl of between criteria.
+   * @param name field name
+   * @param startValue nullable
+   * @param endValue nullable
+   */
   void between(
       String name,
       FiltersQueryParser.PropertyValueContext startValue,

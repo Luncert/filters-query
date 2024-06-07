@@ -197,7 +197,15 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
     ParameterExpression<? extends Comparable<? super Object>> p1 =
         createParameter(name, startValue);
     ParameterExpression<? extends Comparable<? super Object>> p2 = createParameter(name, endValue);
-    Predicate predicate = criteriaBuilder.between(path, p1, p2);
+
+    Predicate predicate;
+    if (p1 != null && p2 != null) {
+      predicate = criteriaBuilder.between(path, p1, p2);
+    } else if (p1 != null) {
+      predicate = criteriaBuilder.greaterThanOrEqualTo(path, p1);
+    } else {
+      predicate = criteriaBuilder.lessThanOrEqualTo(path, p2);
+    }
     predicates.add(predicate);
   }
 
@@ -330,6 +338,9 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
 
   private <T extends Comparable<? super T>> ParameterExpression<T> createParameter(
       String name, ParseTree value) {
+    if (value == null) {
+      return null;
+    }
     return createParameter(name, value, Function.identity());
   }
 

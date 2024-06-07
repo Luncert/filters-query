@@ -50,7 +50,11 @@ boolOperator:
 
 betweenCriteria: propertyName WS BETWEEN WS betweenCriteriaValue;
 
-betweenCriteriaValue: L_BRACKET WS? propertyValue WS? COMMA WS? propertyValue WS? R_BRACKET;
+betweenCriteriaValue:
+  L_BRACKET WS? (
+  (propertyValue WS? COMMA WS? propertyValue?)
+  | (COMMA WS? propertyValue)
+  ) WS? R_BRACKET;
 
 emptyCriteria: propertyName WS? EQUALS WS? NIL_LIT;
 

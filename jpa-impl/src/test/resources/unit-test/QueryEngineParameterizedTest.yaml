@@ -49,6 +49,12 @@ case_id_lessThan:
 case_id_between:
   criteria: 'filter by id between [2, 8]'
   expected: [2, 3, 4, 5, 6, 7, 8]
+case_id_between_left:
+  criteria: 'filter by id between [8,]'
+  expected: [8, 9]
+case_id_between_right:
+  criteria: 'filter by id between [, 1]'
+  expected: [-1, 1]
 case_externalReference_startsWith:
   criteria: 'filter by externalReference startsWith "ext"'
   expected: [4, 6, 7, 8, 9]
