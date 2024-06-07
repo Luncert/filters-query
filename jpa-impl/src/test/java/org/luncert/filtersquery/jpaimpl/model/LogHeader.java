@@ -42,7 +42,7 @@ public class LogHeader implements Serializable {
   private long createdAt;
 
   @OneToOne
-  @JoinColumn(name = "extId")
+  @JoinColumn(name = "id")
   private Tag tag;
 
   @OneToMany

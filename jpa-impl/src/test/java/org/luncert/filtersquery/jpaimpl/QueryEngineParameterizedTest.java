@@ -113,7 +113,7 @@ public class QueryEngineParameterizedTest {
         // "case_bool_equal_true",
         // "case_bool_equal_false",
         // "case_bool_not_null",
-        //"case_join",
+        "case_join",
         "case_join_collection"
     );
   }
