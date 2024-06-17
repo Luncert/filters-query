@@ -11,6 +11,20 @@ public abstract class Value implements Node {
     }
   };
 
+  public static final Value TRUE = new Value() {
+    @Override
+    public String toString() {
+      return Boolean.TRUE.toString();
+    }
+  };
+
+  public static final Value FALSE = new Value() {
+    @Override
+    public String toString() {
+      return Boolean.FALSE.toString();
+    }
+  };
+
   public static LiteralValue literal(String value) {
     return new LiteralValue(value);
   }
