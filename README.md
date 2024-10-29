@@ -2,13 +2,13 @@
 
 filters-query can translate your query string to JPA criteria, Lucene query and Java predicates, which empowers you build complex query API fast.
 
-## Syntax
+## 1.Syntax
 
 ```
 filter by <criterias> [offset <number>] [limit <number>] [sort by <orders>]
 ```
 
-### 1.Criterias
+### Criterias
 
 filters-query supports following operators:
 
@@ -41,7 +41,7 @@ Examples:
 - sort by id desc: ``sort by id desc``
 - sort by multiple fields: ``filter by () sort by id desc, name asc``
 
-## Integrate with JPA
+## 2.Integrate with JPA
 
 Maven Dep:
 
@@ -86,7 +86,7 @@ Process query:
 searchEngine.searchPages("filter by id < 10 offset 5 limit 5");
 ```
 
-## Translate query to predicates
+## 3.Translate query to predicates
 
 Maven Dep:
 
