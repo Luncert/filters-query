@@ -32,6 +32,7 @@ import org.luncert.filtersquery.api.BasicFiltersQueryBuilder;
 import org.luncert.filtersquery.api.FiltersQueryBuilder;
 import org.luncert.filtersquery.api.exception.IllegalParameterException;
 import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
+import org.luncert.filtersquery.jpaimpl.exception.InvalidJoinPropertyException;
 import org.luncert.filtersquery.jpaimpl.exception.InvalidJoinTargetException;
 
 @RequiredArgsConstructor
@@ -400,7 +401,11 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
     if (join == null) {
       throw new InvalidJoinTargetException(patterns[0]);
     }
-    return join.get(patterns[1]);
+    try {
+      return join.get(patterns[1]);
+    } catch (Exception ex) {
+      throw new InvalidJoinPropertyException(patterns[1]);
+    }
   }
 
   private <T> T createPredicate(
