@@ -5,6 +5,6 @@ import org.luncert.filtersquery.api.exception.FiltersQueryCirtiraException;
 public class InvalidJoinPropertyException extends FiltersQueryCirtiraException {
 
   public InvalidJoinPropertyException(String propertyName) {
-    super(propertyName);
+    super("invalid join property " + propertyName);
   }
 }
