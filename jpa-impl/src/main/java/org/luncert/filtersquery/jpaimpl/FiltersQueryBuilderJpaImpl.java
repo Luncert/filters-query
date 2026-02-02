@@ -32,6 +32,7 @@ import org.luncert.filtersquery.api.BasicFiltersQueryBuilder;
 import org.luncert.filtersquery.api.FiltersQueryBuilder;
 import org.luncert.filtersquery.api.exception.IllegalParameterException;
 import org.luncert.filtersquery.api.grammar.FiltersQueryParser;
+import org.luncert.filtersquery.jpaimpl.exception.InvalidJoinTargetException;
 
 @RequiredArgsConstructor
 public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
@@ -83,7 +84,10 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   }
 
   @Override
-  public void equal(String name, FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value) {
+  public void equal(
+    String name,
+    FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value
+  ) {
     if (isNull(value)) {
       Path<? extends Comparable<? super Object>> path = getPath(name);
       predicates.add(criteriaBuilder.isNull(path));
@@ -97,7 +101,10 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
    * Assert column not equal to specified value, not null and not empty.
    */
   @Override
-  public void notEqual(String name, FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value) {
+  public void notEqual(
+    String name,
+    FiltersQueryParser.PropertyValueWithReferenceBoolNullContext value
+  ) {
     if (isNull(value)) {
       Path<? extends Comparable<? super Object>> path = getPath(name);
       predicates.add(criteriaBuilder.isNotNull(path));
@@ -107,14 +114,17 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
     Predicate predicate = createPredicate(name, value, (path, parameter) -> {
       if (isLiteral(name)) {
         return criteriaBuilder.or(
-            criteriaBuilder.notEqual(path, parameter),
-            criteriaBuilder.isNull(path),
-            criteriaBuilder.equal(criteriaBuilder.length(path.as(String.class)), 0)
+          criteriaBuilder.notEqual(path, parameter),
+          criteriaBuilder.isNull(path),
+          criteriaBuilder.equal(
+            criteriaBuilder.length(path.as(String.class)),
+            0
+          )
         );
       } else {
         return criteriaBuilder.or(
-            criteriaBuilder.notEqual(path, parameter),
-            criteriaBuilder.isNull(path)
+          criteriaBuilder.notEqual(path, parameter),
+          criteriaBuilder.isNull(path)
         );
       }
     });
@@ -129,8 +139,10 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
     Path<?> path = getPath(name);
     Predicate predicate = criteriaBuilder.isNull(path);
     if (isLiteral(name)) {
-      predicate = criteriaBuilder.or(predicate,
-          criteriaBuilder.equal(criteriaBuilder.length(path.as(String.class)), 0));
+      predicate = criteriaBuilder.or(
+        predicate,
+        criteriaBuilder.equal(criteriaBuilder.length(path.as(String.class)), 0)
+      );
     }
     predicates.add(predicate);
   }
@@ -140,63 +152,94 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
     Path<?> path = getPath(name);
     Predicate predicate = criteriaBuilder.isNotNull(path);
     if (isLiteral(name)) {
-      predicate = criteriaBuilder.and(predicate,
-          criteriaBuilder.greaterThan(criteriaBuilder.length(path.as(String.class)), 0));
+      predicate = criteriaBuilder.and(
+        predicate,
+        criteriaBuilder.greaterThan(
+          criteriaBuilder.length(path.as(String.class)),
+          0
+        )
+      );
     }
     predicates.add(predicate);
   }
 
   @Override
-  public void in(String name, List<FiltersQueryParser.PropertyValueWithReferenceBoolNullContext> values) {
+  public void in(
+    String name,
+    List<FiltersQueryParser.PropertyValueWithReferenceBoolNullContext> values
+  ) {
     Path<? extends Comparable<? super Object>> path = getPath(name);
 
     AtomicBoolean containsNull = new AtomicBoolean(false);
-    var parsedValues = values.stream().filter(v -> {
-      if (isNull(v)) {
-        containsNull.set(true);
-        return false;
-      }
-      return true;
-    }).map(this::getLiteral).toList();
+    var parsedValues = values
+      .stream()
+      .filter(v -> {
+        if (isNull(v)) {
+          containsNull.set(true);
+          return false;
+        }
+        return true;
+      })
+      .map(this::getLiteral)
+      .toList();
     var predicate = path.in(parsedValues);
 
     if (containsNull.get()) {
-      predicates.add(criteriaBuilder.or(predicate, criteriaBuilder.isNull(path)));
+      predicates.add(
+        criteriaBuilder.or(predicate, criteriaBuilder.isNull(path))
+      );
     } else {
       predicates.add(predicate);
     }
   }
 
   @Override
-  public void greaterThanEqual(String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
-    predicates.add(createPredicate(name, value, criteriaBuilder::greaterThanOrEqualTo));
+  public void greaterThanEqual(
+    String name,
+    FiltersQueryParser.PropertyValueWithReferenceContext value
+  ) {
+    predicates.add(
+      createPredicate(name, value, criteriaBuilder::greaterThanOrEqualTo)
+    );
   }
 
   @Override
   public void greaterThan(
-      String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
+    String name,
+    FiltersQueryParser.PropertyValueWithReferenceContext value
+  ) {
     predicates.add(createPredicate(name, value, criteriaBuilder::greaterThan));
   }
 
   @Override
   public void lessThanEqual(
-      String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
-    predicates.add(createPredicate(name, value, criteriaBuilder::lessThanOrEqualTo));
+    String name,
+    FiltersQueryParser.PropertyValueWithReferenceContext value
+  ) {
+    predicates.add(
+      createPredicate(name, value, criteriaBuilder::lessThanOrEqualTo)
+    );
   }
 
   @Override
   public void lessThan(
-      String name, FiltersQueryParser.PropertyValueWithReferenceContext value) {
+    String name,
+    FiltersQueryParser.PropertyValueWithReferenceContext value
+  ) {
     predicates.add(createPredicate(name, value, criteriaBuilder::lessThan));
   }
 
   @Override
   public void between(
-      String name, FiltersQueryParser.PropertyValueContext startValue, FiltersQueryParser.PropertyValueContext endValue) {
+    String name,
+    FiltersQueryParser.PropertyValueContext startValue,
+    FiltersQueryParser.PropertyValueContext endValue
+  ) {
     Path<? extends Comparable<? super Object>> path = getPath(name);
     ParameterExpression<? extends Comparable<? super Object>> p1 =
-        createParameter(name, startValue);
-    ParameterExpression<? extends Comparable<? super Object>> p2 = createParameter(name, endValue);
+      createParameter(name, startValue);
+    ParameterExpression<? extends Comparable<? super Object>> p2 =
+      createParameter(name, endValue);
 
     Predicate predicate;
     if (p1 != null && p2 != null) {
@@ -211,36 +254,68 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
 
   @Override
   public void startsWith(
-      String name, FiltersQueryParser.StringPropertyValueContext value) {
+    String name,
+    FiltersQueryParser.StringPropertyValueContext value
+  ) {
     Path<?> path = getPath(name);
-    ParameterExpression<String> parameter = createParameter(name, value, literal -> literal + "%%");
-    Predicate predicate = criteriaBuilder.like(path.as(String.class), parameter, '\\');
+    ParameterExpression<String> parameter = createParameter(
+      name,
+      value,
+      literal -> literal + "%%"
+    );
+    Predicate predicate = criteriaBuilder.like(
+      path.as(String.class),
+      parameter,
+      '\\'
+    );
     predicates.add(predicate);
   }
 
   @Override
   public void endsWith(
-      String name, FiltersQueryParser.StringPropertyValueContext value) {
+    String name,
+    FiltersQueryParser.StringPropertyValueContext value
+  ) {
     Path<?> path = getPath(name);
-    ParameterExpression<String> parameter = createParameter(name, value, literal -> "%%" + literal);
-    Predicate predicate = criteriaBuilder.like(path.as(String.class), parameter, '\\');
+    ParameterExpression<String> parameter = createParameter(
+      name,
+      value,
+      literal -> "%%" + literal
+    );
+    Predicate predicate = criteriaBuilder.like(
+      path.as(String.class),
+      parameter,
+      '\\'
+    );
     predicates.add(predicate);
   }
 
   @Override
-  public void like(String name, FiltersQueryParser.StringPropertyValueContext value) {
+  public void like(
+    String name,
+    FiltersQueryParser.StringPropertyValueContext value
+  ) {
     Path<?> path = getPath(name);
     ParameterExpression<String> parameter = createParameter(
-        name, value, literal -> "%%" + literal + "%%");
-    Predicate predicate = criteriaBuilder.like(path.as(String.class), parameter, '\\');
+      name,
+      value,
+      literal -> "%%" + literal + "%%"
+    );
+    Predicate predicate = criteriaBuilder.like(
+      path.as(String.class),
+      parameter,
+      '\\'
+    );
     predicates.add(predicate);
   }
 
   @Override
   public void order(String name, Token direction) {
-    orders.add(getTokenName(direction).equals("ASC")
+    orders.add(
+      getTokenName(direction).equals("ASC")
         ? criteriaBuilder.asc(getPath(name))
-        : criteriaBuilder.desc(getPath(name)));
+        : criteriaBuilder.desc(getPath(name))
+    );
   }
 
   @Override
@@ -322,22 +397,31 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
     }
 
     var join = joins.get(patterns[0]);
+    if (join == null) {
+      throw new InvalidJoinTargetException(patterns[0]);
+    }
     return join.get(patterns[1]);
   }
 
   private <T> T createPredicate(
-      String name, ParseTree value,
-      BiFunction<Path<? extends Comparable<? super Object>>,
-          ParameterExpression<? extends Comparable<? super Object>>, T> action) {
+    String name,
+    ParseTree value,
+    BiFunction<
+      Path<? extends Comparable<? super Object>>,
+      ParameterExpression<? extends Comparable<? super Object>>,
+      T
+    > action
+  ) {
     Path<? extends Comparable<? super Object>> path = getPath(name);
 
     ParameterExpression<? extends Comparable<? super Object>> parameter =
-        createParameter(name, value);
+      createParameter(name, value);
     return action.apply(path, parameter);
   }
 
-  private <T extends Comparable<? super T>> ParameterExpression<T> createParameter(
-      String name, ParseTree value) {
+  private <T extends Comparable<? super T>> ParameterExpression<
+    T
+  > createParameter(String name, ParseTree value) {
     if (value == null) {
       return null;
     }
@@ -345,8 +429,13 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   }
 
   @SuppressWarnings("unchecked")
-  private <T extends Comparable<? super T>> ParameterExpression<T> createParameter(
-      String name, ParseTree value, Function<String, String> valueModifier) {
+  private <T extends Comparable<? super T>> ParameterExpression<
+    T
+  > createParameter(
+    String name,
+    ParseTree value,
+    Function<String, String> valueModifier
+  ) {
     String literal = getLiteral(value);
 
     Class<Object> type = getPath(name).getModel().getBindableJavaType();
@@ -362,7 +451,10 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   }
 
   private boolean isNull(ParseTree value) {
-    if (value instanceof FiltersQueryParser.PropertyValueWithReferenceBoolNullContext ctx) {
+    if (
+      value instanceof
+        FiltersQueryParser.PropertyValueWithReferenceBoolNullContext ctx
+    ) {
       return ctx.NULL() != null;
     }
 
@@ -370,7 +462,9 @@ public class FiltersQueryBuilderJpaImpl<E> extends BasicFiltersQueryBuilder {
   }
 
   private boolean isLiteral(String name) {
-    return String.class.isAssignableFrom(getPath(name).getModel().getBindableJavaType());
+    return String.class.isAssignableFrom(
+      getPath(name).getModel().getBindableJavaType()
+    );
   }
 
   @Getter
